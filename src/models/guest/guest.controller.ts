@@ -29,10 +29,10 @@ export class GuestListController {
 
   @Public()
   @Get()
-  // @ApiQuery({
-  //   name: 'weddingId',
-  //   description: 'ID of the wedding to filter guests',
-  // })
+  @ApiQuery({
+    name: 'weddingId',
+    description: 'ID of the wedding to filter guests',
+  })
   @ApiQuery({
     name: 'page',
     required: false,
@@ -46,13 +46,13 @@ export class GuestListController {
     example: 10,
   })
   async findAll(
-    // @Query('weddingId') weddingId: string,
+    @Query('weddingId') weddingId: string,
     @Query('page') page = 1,
     @Query('limit') limit = 10,
   ) {
     const pageNumber = Math.max(1, Number(page));
     const limitNumber = Math.max(1, Math.min(100, Number(limit))); // Giới hạn tối đa 100
-    return this.guestListService.findAll(pageNumber, limitNumber);
+    return this.guestListService.findAll(weddingId, pageNumber, limitNumber);
   }
   @Get(':id')
   async findOne(@Param('id') id: string) {

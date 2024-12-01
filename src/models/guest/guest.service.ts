@@ -17,12 +17,13 @@ export class GuestListService {
     return this.guestListRepository.save(guest);
   }
 
-  async findAll(page: number, limit: number) {
+  async findAll(weddingId: string, page: number, limit: number) {
     // Tìm kiếm khách mời theo weddingId và phân trang
     const [guests, total] = await this.guestListRepository.findAndCount({
-      // where: { weddingId },
+      where: { weddingId },
       skip: (page - 1) * limit, // Tính toán offset
       take: limit, // Lấy số lượng khách mời theo limit
+      relations: ['weddingDetail'], // Fetch related weddingDetail
     });
 
     return {

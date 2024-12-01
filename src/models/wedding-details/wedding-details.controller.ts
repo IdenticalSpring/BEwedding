@@ -21,6 +21,7 @@ import { WeddingDetailService } from './wedding-details.service';
 import { WeddingDetail } from './enitity/wedding-details.enity';
 import { CreateWeddingDetailDto } from './dto/create-wedding-details.dto';
 import { UpdateWeddingDetailDto } from './dto/update-wedding-details.dto';
+import { Public } from 'src/auth/decorators/public.decorator';
 
 @ApiTags('wedding-details')
 @Controller('wedding-details')
@@ -41,6 +42,7 @@ export class WeddingDetailController {
   }
 
   @Get()
+  @Public()
   @ApiOperation({ summary: 'Lấy danh sách tất cả thông tin đám cưới' })
   @ApiResponse({
     status: 200,
