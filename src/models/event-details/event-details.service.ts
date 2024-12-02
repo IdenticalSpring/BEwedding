@@ -35,6 +35,13 @@ export class EventDetailService {
     return this.eventDetailRepository.find({ relations: ['weddingDetail'] });
   }
 
+  async findByWeddingID(weddingID: string): Promise<EventDetail[]> {
+    return this.eventDetailRepository.find({
+      where: { weddingDetail: { id: weddingID } },
+      relations: ['weddingDetail'],
+    });
+  }
+
   // Lấy EventDetail theo ID
   async findOne(id: string) {
     return this.eventDetailRepository.findOne({

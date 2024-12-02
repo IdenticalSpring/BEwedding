@@ -18,6 +18,7 @@ import { EventDetailService } from './event-details.service';
 import { CreateEventDetailDTO } from './dto/create-event-details.dto';
 import { EventDetail } from './entity/event-details.entity';
 import { UpdateEventDetailDTO } from './dto/update-event-details.dto';
+import { Public } from 'src/auth/decorators/public.decorator';
 
 @ApiTags('Event Details')
 @Controller('event-details')
@@ -26,6 +27,7 @@ export class EventDetailController {
   constructor(private readonly eventDetailService: EventDetailService) {}
 
   @Post()
+  @Public()
   @ApiOperation({ summary: 'Create a new event detail' })
   @ApiResponse({
     status: 201,
@@ -39,6 +41,7 @@ export class EventDetailController {
   }
 
   @Get(':id')
+  @Public()
   @ApiOperation({ summary: 'Get an event detail by id' })
   @ApiResponse({ status: 200, description: 'Return the event detail' })
   @ApiResponse({ status: 404, description: 'Event detail not found' })
@@ -47,13 +50,31 @@ export class EventDetailController {
   }
 
   @Get()
+  @Public()
   @ApiOperation({ summary: 'Get all event details' })
   @ApiResponse({ status: 200, description: 'Return all event details' })
   async findAll(): Promise<EventDetail[]> {
     return this.eventDetailService.findAll();
   }
+  @Get('wedding/:weddingID')
+  @Public()
+  @ApiOperation({ summary: 'Get event details by wedding ID' })
+  @ApiResponse({
+    status: 200,
+    description: 'Return event details filtered by wedding ID',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'No event details found for the given wedding ID',
+  })
+  async findByWeddingID(
+    @Param('weddingID') weddingId: string,
+  ): Promise<EventDetail[]> {
+    return this.eventDetailService.findByWeddingID(weddingId);
+  }
 
   @Put(':id')
+  @Public()
   @ApiOperation({ summary: 'Update an event detail by id' })
   @ApiResponse({
     status: 200,
@@ -68,6 +89,7 @@ export class EventDetailController {
   }
 
   @Delete(':id')
+  @Public()
   @ApiOperation({ summary: 'Delete an event detail by id' })
   @ApiResponse({
     status: 200,
