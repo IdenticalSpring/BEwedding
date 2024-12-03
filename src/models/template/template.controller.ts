@@ -11,6 +11,7 @@ import {
   HttpCode,
   HttpStatus,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -27,6 +28,7 @@ import { Template } from './entity/template.entity';
 import { CloudinaryService } from '../cloudinary/cloudinary.service'; // Assuming Cloudinary service is imported
 import { FileInterceptor } from '@nestjs/platform-express'; // File upload interceptor
 import { Public } from 'src/auth/decorators/public.decorator';
+import { AdminGuard } from 'src/guards/admin.guard';
 
 @ApiTags('Templates') // Gắn tag để nhóm API trong Swagger
 @Controller('templates')
@@ -38,6 +40,7 @@ export class TemplateController {
   ) {}
 
   @Post()
+  @UseGuards(AdminGuard)
   @HttpCode(HttpStatus.CREATED)
   @ApiOperation({ summary: 'Tạo một mẫu giao diện mới' })
   @ApiConsumes('multipart/form-data') // Specify content type for file upload
@@ -68,6 +71,7 @@ export class TemplateController {
   }
 
   @Get()
+  @UseGuards(AdminGuard)
   @Public()
   @ApiOperation({ summary: 'Lấy danh sách tất cả mẫu giao diện' })
   @ApiResponse({ status: 200, description: 'Danh sách mẫu giao diện' })
@@ -122,6 +126,7 @@ export class TemplateController {
   }
 
   @Delete(':id')
+  @UseGuards(AdminGuard)
   @HttpCode(HttpStatus.NO_CONTENT)
   @ApiOperation({ summary: 'Xóa một mẫu giao diện' })
   @ApiResponse({ status: 204, description: 'Xóa mẫu giao diện thành công' })
