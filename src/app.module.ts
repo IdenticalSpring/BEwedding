@@ -24,6 +24,7 @@ import { GuestListModule } from './models/guest/guest.module';
 import { GuestbookSectionModule } from './models/guestbook-section/guestbook-section.module';
 import { HeaderSectionsModule } from './models/header-section/header-section.module';
 import { WeddingDetailModule } from './models/wedding-details/wedding-details.module';
+import { AboutSectionModule } from './models/about-section/about-section.module';
 
 @Module({
   imports: [
@@ -64,6 +65,7 @@ import { WeddingDetailModule } from './models/wedding-details/wedding-details.mo
     ThemeModule,
     EventDetailModule,
     GallerySectionModule,
+    AboutSectionModule,
     GuestListModule,
     GuestbookSectionModule,
     HeaderSectionsModule,
