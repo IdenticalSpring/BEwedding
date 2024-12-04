@@ -18,6 +18,7 @@ import {
 import { AboutSectionService } from './about-section.service';
 import { AboutSection } from './entity/about-section.entity';
 import { UpdateAboutSectionDto } from './dto/update-about-section.dto';
+import { Public } from 'src/auth/decorators/public.decorator';
 
 @ApiTags('about-sections')
 @Controller('about-sections')
@@ -26,6 +27,7 @@ export class AboutSectionController {
   constructor(private readonly aboutSectionService: AboutSectionService) {}
 
   @Post()
+  @Public()
   @ApiOperation({ summary: 'Tạo mới phần giới thiệu' })
   @ApiResponse({
     status: 201,
@@ -37,6 +39,7 @@ export class AboutSectionController {
   }
 
   @Get()
+  @Public()
   @ApiOperation({ summary: 'Lấy tất cả phần giới thiệu' })
   @ApiResponse({
     status: 200,
@@ -48,6 +51,7 @@ export class AboutSectionController {
   }
 
   @Get(':id')
+  @Public()
   @ApiOperation({ summary: 'Lấy thông tin phần giới thiệu theo ID' })
   @ApiResponse({
     status: 200,
@@ -60,6 +64,7 @@ export class AboutSectionController {
   }
 
   @Patch(':id')
+  @Public()
   @ApiOperation({ summary: 'Cập nhật phần giới thiệu' })
   @ApiResponse({
     status: 200,
@@ -74,6 +79,7 @@ export class AboutSectionController {
   }
 
   @Delete(':id')
+  @Public()
   @ApiOperation({ summary: 'Xóa phần giới thiệu' })
   @ApiResponse({
     status: 204,

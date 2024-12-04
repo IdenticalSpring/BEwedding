@@ -17,6 +17,7 @@ import {
   ApiBearerAuth,
 } from '@nestjs/swagger';
 import { HeaderSection } from './entity/header-section.entity';
+import { Public } from 'src/auth/decorators/public.decorator';
 
 @ApiTags('header-sections')
 @Controller('header-sections')
@@ -25,6 +26,7 @@ export class HeaderSectionController {
   constructor(private readonly headerSectionService: HeaderSectionService) {}
 
   @Post()
+  @Public()
   @ApiOperation({ summary: 'Tạo mới phần đầu trang' })
   @ApiResponse({
     status: 201,
@@ -36,6 +38,7 @@ export class HeaderSectionController {
   }
 
   @Get()
+  @Public()
   @ApiOperation({ summary: 'Lấy tất cả phần đầu trang' })
   @ApiResponse({
     status: 200,
@@ -47,6 +50,7 @@ export class HeaderSectionController {
   }
 
   @Get(':id')
+  @Public()
   @ApiOperation({ summary: 'Lấy thông tin phần đầu trang theo ID' })
   @ApiResponse({
     status: 200,
@@ -59,6 +63,7 @@ export class HeaderSectionController {
   }
 
   @Patch(':id')
+  @Public()
   @ApiOperation({ summary: 'Cập nhật phần đầu trang' })
   @ApiResponse({
     status: 200,
@@ -73,6 +78,7 @@ export class HeaderSectionController {
   }
 
   @Delete(':id')
+  @Public()
   @ApiOperation({ summary: 'Xóa phần đầu trang' })
   @ApiResponse({
     status: 204,
