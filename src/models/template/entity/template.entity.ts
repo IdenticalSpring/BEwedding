@@ -1,3 +1,4 @@
+import { Section } from 'src/models/section/entity/section.entity';
 import { Theme } from 'src/models/theme/entity/theme.enity';
 import { User } from 'src/models/user/entity/user.entity';
 import { WeddingDetail } from 'src/models/wedding-details/enitity/wedding-details.enity';
@@ -49,4 +50,7 @@ export class Template {
 
   @ManyToOne(() => User, (user) => user.templates, { onDelete: 'CASCADE' })
   user: User;
+
+  @OneToMany(() => Section, (section) => section.template, { cascade: true })
+  sections: Section[];
 }

@@ -26,6 +26,8 @@ import { HeaderSectionsModule } from './models/header-section/header-section.mod
 import { WeddingDetailModule } from './models/wedding-details/wedding-details.module';
 import { AboutSectionModule } from './models/about-section/about-section.module';
 import { UserModule } from './models/user/user.module';
+import { Section } from './models/section/entity/section.entity';
+import { SectionModule } from './models/section/section.module';
 
 @Module({
   imports: [
@@ -50,6 +52,7 @@ import { UserModule } from './models/user/user.module';
         HeaderSection,
         WeddingDetail,
         AboutSection,
+        Section,
       ],
       synchronize: false,
     }),
@@ -71,6 +74,7 @@ import { UserModule } from './models/user/user.module';
     GuestbookSectionModule,
     HeaderSectionsModule,
     WeddingDetailModule,
+    SectionModule,
     // Cloudinary
     CloudinaryModule,
 
