@@ -31,12 +31,12 @@ export class CreateSectionDto {
   @ApiProperty({ description: 'Template ID liên kết', required: false })
   @IsOptional()
   @IsInt()
-  templateID?: number;
+  templateID?: string;
 
   @ApiProperty({ description: 'Vị trí hiển thị của section', required: false })
   @IsOptional()
   @IsInt()
-  position?: number;
+  position?: string;
 
   @ApiProperty({
     description: 'Metadata (JSON)',

@@ -72,7 +72,6 @@ export class TemplateController {
 
   @Get()
   @UseGuards(AdminGuard)
-  @Public()
   @ApiOperation({ summary: 'Lấy danh sách tất cả mẫu giao diện' })
   @ApiResponse({ status: 200, description: 'Danh sách mẫu giao diện' })
   async findAll(

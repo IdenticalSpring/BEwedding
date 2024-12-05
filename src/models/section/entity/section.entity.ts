@@ -3,7 +3,7 @@ import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
 
 @Entity('sections')
 export class Section {
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn('uuid')
   id: number;
 
   @Column({ type: 'varchar', length: 255 })
@@ -20,8 +20,8 @@ export class Section {
   })
   template: Template;
 
-  @Column({ type: 'int', nullable: true })
-  position: number;
+  @Column({ type: 'varchar', nullable: true })
+  position: string;
 
   @Column({ type: 'json', nullable: true })
   metadata: Record<string, any>;
