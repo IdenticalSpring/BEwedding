@@ -25,6 +25,7 @@ import { GuestbookSectionModule } from './models/guestbook-section/guestbook-sec
 import { HeaderSectionsModule } from './models/header-section/header-section.module';
 import { WeddingDetailModule } from './models/wedding-details/wedding-details.module';
 import { AboutSectionModule } from './models/about-section/about-section.module';
+import { UserModule } from './models/user/user.module';
 
 @Module({
   imports: [
@@ -59,7 +60,7 @@ import { AboutSectionModule } from './models/about-section/about-section.module'
       },
     }),
     AuthModule,
-
+    UserModule,
     // Wedding template
     TemplateModule,
     ThemeModule,

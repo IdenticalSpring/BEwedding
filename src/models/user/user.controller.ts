@@ -24,6 +24,7 @@ import {
   ApiConsumes,
 } from '@nestjs/swagger';
 import { Express } from 'express';
+import { Public } from 'src/auth/decorators/public.decorator';
 
 @ApiTags('Users')
 @Controller('users')
@@ -32,6 +33,7 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Get(':id')
+  @Public()
   @ApiOperation({ summary: 'Get user by ID' })
   @ApiResponse({
     status: 200,
@@ -47,6 +49,7 @@ export class UserController {
     return user;
   }
   @Put(':id')
+  @Public()
   @ApiOperation({ summary: 'Update user by ID' })
   @ApiConsumes('multipart/form-data')
   @ApiBody({ type: UpdateUserDto })
@@ -74,6 +77,7 @@ export class UserController {
   }
 
   @Get()
+  @Public()
   @ApiOperation({ summary: 'Get all users with pagination' })
   @ApiQuery({
     name: 'page',

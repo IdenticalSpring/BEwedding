@@ -20,27 +20,27 @@ export class UpdateUserDto {
   @IsEmail()
   email?: string;
 
-  @ApiProperty({ description: 'The phone number of the user', required: false })
-  @IsOptional()
-  @IsString()
-  phone?: string;
+  // @ApiProperty({ description: 'The phone number of the user', required: false })
+  // @IsOptional()
+  // @IsString()
+  // phone?: string;
 
-  @ApiProperty({
-    description: 'Indicates whether the user is active',
-    required: false,
-  })
-  @IsOptional()
-  @IsBoolean()
-  isActive?: boolean;
+  // @ApiProperty({
+  //   description: 'Indicates whether the user is active',
+  //   required: false,
+  // })
+  // @IsOptional()
+  // @IsBoolean()
+  // isActive?: boolean;
 
-  @ApiProperty({
-    description: 'The role of the user',
-    enum: UserRole,
-    required: false,
-  })
-  @IsOptional()
-  @IsEnum(UserRole)
-  role?: UserRole;
+  // @ApiProperty({
+  //   description: 'The role of the user',
+  //   enum: UserRole,
+  //   required: false,
+  // })
+  // @IsOptional()
+  // @IsEnum(UserRole)
+  // role?: UserRole;
 
   @ApiProperty({
     description: 'The avatar of the user',
@@ -51,15 +51,15 @@ export class UpdateUserDto {
   @IsOptional()
   avatar?: string;
 
-  @ApiProperty({
-    description: 'The date of birth of the user',
-    required: false,
-  })
-  @IsOptional()
-  @IsDate()
-  dateOfBirth?: Date;
-  @ApiProperty({ description: 'The address of the user', required: false })
-  @IsOptional()
-  @IsString()
-  address?: string;
+  // @ApiProperty({
+  //   description: 'The date of birth of the user',
+  //   required: false,
+  // })
+  // @IsOptional()
+  // @IsDate()
+  // dateOfBirth?: Date;
+  // @ApiProperty({ description: 'The address of the user', required: false })
+  // @IsOptional()
+  // @IsString()
+  // address?: string;
 }

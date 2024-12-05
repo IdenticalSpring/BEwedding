@@ -33,7 +33,7 @@ export class AuthService {
       }
 
       const hashedPassword = await bcrypt.hash(data.password, 10);
-      const activationToken = crypto.randomBytes(32).toString('hex');
+      const activationToken = this.generateActivationCode(6);
       const tokenExpires = new Date();
       tokenExpires.setHours(tokenExpires.getHours() + 1);
 
@@ -66,6 +66,16 @@ export class AuthService {
     }
   }
 
+  private generateActivationCode(length: number): string {
+    const chars =
+      'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let activationCode = '';
+    for (let i = 0; i < length; i++) {
+      const randomIndex = Math.floor(Math.random() * chars.length);
+      activationCode += chars[randomIndex];
+    }
+    return activationCode;
+  }
   async validateUser(
     identifier: string,
     password: string,
@@ -166,6 +176,7 @@ export class AuthService {
 
     return { message: 'A new activation token has been sent to your email' };
   }
+
   async forgotPassword(email: string): Promise<string> {
     try {
       const user = await this.userRepository.findOne({ where: { email } });

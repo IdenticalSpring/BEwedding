@@ -104,13 +104,13 @@ export class UserService {
     // Cập nhật thông tin người dùng
     user.name = data.name || user.name;
     user.email = data.email || user.email;
-    user.phone = data.phone || user.phone;
-    user.isActive = data.isActive ?? user.isActive;
-    user.role = data.role || user.role;
+    // user.phone = data.phone || user.phone;
+    // user.isActive = data.isActive ?? user.isActive;
+    // user.role = data.role || user.role;
 
-    if (data.dateOfBirth) {
-      user.dateOfBirth = new Date(data.dateOfBirth);
-    }
+    // if (data.dateOfBirth) {
+    //   user.dateOfBirth = new Date(data.dateOfBirth);
+    // }
 
     // Nếu có ảnh avatar, upload lên Cloudinary
     if (avatarFile) {
