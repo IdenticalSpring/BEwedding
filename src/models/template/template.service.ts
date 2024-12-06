@@ -36,7 +36,10 @@ export class TemplateService {
   }
 
   async findOne(id: string): Promise<Template> {
-    const template = await this.templateRepository.findOne({ where: { id } });
+    const template = await this.templateRepository.findOne({
+      where: { id },
+      relations: ['sections'],
+    });
     if (!template) {
       throw new NotFoundException(`Template with ID "${id}" not found`);
     }
