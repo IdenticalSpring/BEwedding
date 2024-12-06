@@ -30,12 +30,12 @@ export class CreateSectionDto {
 
   @ApiProperty({ description: 'Template ID liên kết', required: false })
   @IsOptional()
-  @IsInt()
-  templateID?: string;
+  @IsString()
+  templateId?: string;
 
   @ApiProperty({ description: 'Vị trí hiển thị của section', required: false })
   @IsOptional()
-  @IsInt()
+  @IsString()
   position?: string;
 
   @ApiProperty({

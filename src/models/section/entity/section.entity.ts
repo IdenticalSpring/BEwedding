@@ -1,5 +1,11 @@
 import { Template } from 'src/models/template/entity/template.entity';
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  JoinColumn,
+} from 'typeorm';
 
 @Entity('sections')
 export class Section {
@@ -15,9 +21,13 @@ export class Section {
   @Column({ type: 'varchar', length: 100, nullable: true })
   theme: string;
 
+  @Column({ type: 'uuid', nullable: true })
+  templateId: string;
+
   @ManyToOne(() => Template, (template) => template.sections, {
     onDelete: 'CASCADE',
   })
+  @JoinColumn({ name: 'templateId' })
   template: Template;
 
   @Column({ type: 'varchar', nullable: true })
