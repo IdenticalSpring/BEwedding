@@ -1,7 +1,7 @@
 import { Section } from 'src/models/section/entity/section.entity';
-import { Theme } from 'src/models/theme/entity/theme.enity';
+import { Theme } from 'src/models/theme/entity/theme.entity';
 import { User } from 'src/models/user/entity/user.entity';
-import { WeddingDetail } from 'src/models/wedding-details/enitity/wedding-details.enity';
+import { WeddingDetail } from 'src/models/wedding-details/entity/wedding-details.entity';
 import {
   Entity,
   PrimaryGeneratedColumn,

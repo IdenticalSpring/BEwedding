@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateThemeDto } from './dto/create-theme.dto';
 import { UpdateThemeDto } from './dto/update-theme.dto';
-import { Theme } from './entity/theme.enity';
+import { Theme } from './entity/theme.entity'; 
 import { Template } from '../template/entity/template.entity';
 
 @Injectable()
@@ -13,27 +13,29 @@ export class ThemeService {
     private readonly themeRepository: Repository<Theme>,
     @InjectRepository(Template)
     private readonly templateRepository: Repository<Template>,
-  ) {}
+  ) { }
 
+  // Create a new theme with a specific template
   async create(createThemeDto: CreateThemeDto) {
     const template = await this.templateRepository.findOne({
       where: { id: createThemeDto.templateId },
     });
 
     if (!template) {
-      throw new Error('Template not found');
+      throw new Error('Template not found'); // Throw error if template does not exist
     }
 
-    const theme = this.themeRepository.create(createThemeDto);
-    theme.template = template;
-    return this.themeRepository.save(theme);
+    const theme = this.themeRepository.create(createThemeDto); // Create a theme from the DTO
+    theme.template = template; // Associate the theme with the template
+    return this.themeRepository.save(theme); // Save the theme to the database
   }
 
+  // Retrieve all themes with pagination
   async findAll(page: number, limit: number) {
     const [themes, total] = await this.themeRepository.findAndCount({
-      relations: ['template'], // Fetch related templates
-      skip: (page - 1) * limit, // Số bản ghi cần bỏ qua
-      take: limit, // Số bản ghi cần lấy
+      relations: ['template'], // Include the related template information
+      skip: (page - 1) * limit, // Skip the records for pagination
+      take: limit, // Limit the number of records returned
     });
 
     return {
@@ -41,59 +43,63 @@ export class ThemeService {
       total,
       page,
       limit,
-      totalPages: Math.ceil(total / limit),
+      totalPages: Math.ceil(total / limit), // Calculate the total number of pages
     };
   }
 
+  // Retrieve a specific theme by ID with related data and pagination
   async findOne(id: string, page: number, limit: number) {
     const theme = await this.themeRepository.findOne({
       where: { id },
-      relations: ['template'], // Liên kết với bảng template
+      relations: ['template'], // Include related template data
     });
 
     if (!theme) {
-      throw new Error('Theme not found');
+      throw new Error('Theme not found'); // Throw error if the theme does not exist
     }
 
-    // Lấy danh sách liên quan (nếu cần phân trang cho một mối quan hệ cụ thể)
+    // Fetch related templates (assuming a theme can have related templates)
     const [relatedData, total] = await this.templateRepository.findAndCount({
-      where: { theme: { id } }, // Giả sử template có mối quan hệ với theme
+      where: { theme: { id } }, // Find templates related to the theme
       skip: (page - 1) * limit,
       take: limit,
     });
 
     return {
-      theme, // Thông tin chính của theme
-      relatedData, // Dữ liệu liên quan đã phân trang
-      total, // Tổng số mục liên quan
+      theme, // The main theme data
+      relatedData, // Paginated related templates
+      total, // Total count of related templates
       page,
       limit,
-      totalPages: Math.ceil(total / limit),
+      totalPages: Math.ceil(total / limit), // Calculate the total number of pages for related data
     };
   }
 
+  // Update an existing theme
   async update(id: string, updateThemeDto: UpdateThemeDto) {
     const theme = await this.themeRepository.findOne({
       where: { id },
     });
 
     if (!theme) {
-      throw new Error('Theme not found');
+      throw new Error('Theme not found'); // Throw error if the theme does not exist
     }
 
+    // Update the theme with the new data from the DTO
     Object.assign(theme, updateThemeDto);
-    return this.themeRepository.save(theme);
+    return this.themeRepository.save(theme); // Save the updated theme
   }
 
+  // Remove a theme by its ID
   async remove(id: string) {
     const theme = await this.themeRepository.findOne({
       where: { id },
     });
 
     if (!theme) {
-      throw new Error('Theme not found');
+      throw new Error('Theme not found'); // Throw error if the theme does not exist
     }
 
-    await this.themeRepository.remove(theme);
+    await this.themeRepository.remove(theme); // Remove the theme from the database
   }
 }

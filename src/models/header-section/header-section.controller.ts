@@ -23,14 +23,14 @@ import { Public } from 'src/auth/decorators/public.decorator';
 @Controller('header-sections')
 @ApiBearerAuth('JWT')
 export class HeaderSectionController {
-  constructor(private readonly headerSectionService: HeaderSectionService) {}
+  constructor(private readonly headerSectionService: HeaderSectionService) { }
 
   @Post()
   @Public()
-  @ApiOperation({ summary: 'Tạo mới phần đầu trang' })
+  @ApiOperation({ summary: 'Create a new header section' })
   @ApiResponse({
     status: 201,
-    description: 'Phần đầu trang đã được tạo thành công',
+    description: 'The header section was created successfully',
     type: HeaderSection,
   })
   create(@Body() createHeaderSectionDto: CreateHeaderSectionDto) {
@@ -39,10 +39,10 @@ export class HeaderSectionController {
 
   @Get()
   @Public()
-  @ApiOperation({ summary: 'Lấy tất cả phần đầu trang' })
+  @ApiOperation({ summary: 'Get all header sections' })
   @ApiResponse({
     status: 200,
-    description: 'Danh sách các phần đầu trang',
+    description: 'List of header sections',
     type: [HeaderSection],
   })
   findAll() {
@@ -51,23 +51,23 @@ export class HeaderSectionController {
 
   @Get(':id')
   @Public()
-  @ApiOperation({ summary: 'Lấy thông tin phần đầu trang theo ID' })
+  @ApiOperation({ summary: 'Get a header section by ID' })
   @ApiResponse({
     status: 200,
-    description: 'Thông tin phần đầu trang',
+    description: 'Details of the header section',
     type: HeaderSection,
   })
-  @ApiResponse({ status: 404, description: 'Không tìm thấy phần đầu trang' })
+  @ApiResponse({ status: 404, description: 'Header section not found' })
   findOne(@Param('id') id: string) {
     return this.headerSectionService.findOne(id);
   }
 
   @Patch(':id')
   @Public()
-  @ApiOperation({ summary: 'Cập nhật phần đầu trang' })
+  @ApiOperation({ summary: 'Update a header section' })
   @ApiResponse({
     status: 200,
-    description: 'Phần đầu trang đã được cập nhật',
+    description: 'The header section was updated successfully',
     type: HeaderSection,
   })
   update(
@@ -79,10 +79,10 @@ export class HeaderSectionController {
 
   @Delete(':id')
   @Public()
-  @ApiOperation({ summary: 'Xóa phần đầu trang' })
+  @ApiOperation({ summary: 'Delete a header section' })
   @ApiResponse({
     status: 204,
-    description: 'Phần đầu trang đã được xóa',
+    description: 'The header section was deleted successfully',
   })
   remove(@Param('id') id: string) {
     return this.headerSectionService.remove(id);

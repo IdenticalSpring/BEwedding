@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateAboutSectionDto } from './dto/create-about-section.dto';
 import { AboutSection } from './entity/about-section.entity';
-import { WeddingDetail } from '../wedding-details/enitity/wedding-details.enity';
+import { WeddingDetail } from '../wedding-details/entity/wedding-details.entity';
 import { UpdateAboutSectionDto } from './dto/update-about-section.dto';
 
 @Injectable()

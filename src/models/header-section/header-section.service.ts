@@ -5,7 +5,7 @@ import { Repository } from 'typeorm';
 import { CreateHeaderSectionDto } from './dto/create-header-section.dto';
 import { UpdateHeaderSectionDto } from './dto/update-header-section.dto';
 import { HeaderSection } from './entity/header-section.entity';
-import { WeddingDetail } from '../wedding-details/enitity/wedding-details.enity';
+import { WeddingDetail } from '../wedding-details/entity/wedding-details.entity';
 
 @Injectable()
 export class HeaderSectionService {

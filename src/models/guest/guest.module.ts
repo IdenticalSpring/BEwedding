@@ -8,5 +8,6 @@ import { GuestListService } from './guest.service';
   imports: [TypeOrmModule.forFeature([GuestList])],
   controllers: [GuestListController],
   providers: [GuestListService],
+  exports: [GuestListService],
 })
 export class GuestListModule {}

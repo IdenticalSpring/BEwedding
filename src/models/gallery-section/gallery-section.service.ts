@@ -4,7 +4,7 @@ import { Repository } from 'typeorm';
 import { CreateGallerySectionDto } from './dto/create-gallery-section.dto';
 import { GallerySection } from './entity/gallery-section.entity';
 import { UpdateGallerySectionDto } from './dto/update-gallery-section.dto';
-import { WeddingDetail } from '../wedding-details/enitity/wedding-details.enity';
+import { WeddingDetail } from '../wedding-details/entity/wedding-details.entity';
 
 @Injectable()
 export class GallerySectionService {

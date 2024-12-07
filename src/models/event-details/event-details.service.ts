@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { EventDetail } from './entity/event-details.entity';
-import { WeddingDetail } from '../wedding-details/enitity/wedding-details.enity';
+import { WeddingDetail } from '../wedding-details/entity/wedding-details.entity';
 import { CreateEventDetailDTO } from './dto/create-event-details.dto';
 import { UpdateEventDetailDTO } from './dto/update-event-details.dto';
 

@@ -2,10 +2,9 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateGuestbookSectionDto } from './dto/create-guestbook-section.dto';
-
 import { UpdateGuestbookSectionDto } from './dto/update-guestbook-section.dto';
-import { GuestbookSection } from './entity/guestbook-section.enity';
-import { WeddingDetail } from '../wedding-details/enitity/wedding-details.enity';
+import { GuestbookSection } from './entity/guestbook-section.entity';
+import { WeddingDetail } from '../wedding-details/entity/wedding-details.entity';
 
 @Injectable()
 export class GuestbookSectionService {

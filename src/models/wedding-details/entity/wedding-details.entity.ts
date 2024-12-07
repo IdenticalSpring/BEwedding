@@ -3,7 +3,7 @@ import { AboutSection } from 'src/models/about-section/entity/about-section.enti
 import { EventDetail } from 'src/models/event-details/entity/event-details.entity';
 import { GallerySection } from 'src/models/gallery-section/entity/gallery-section.entity';
 import { GuestList } from 'src/models/guest/entity/guest.entity';
-import { GuestbookSection } from 'src/models/guestbook-section/entity/guestbook-section.enity';
+import { GuestbookSection } from 'src/models/guestbook-section/entity/guestbook-section.entity';
 import { HeaderSection } from 'src/models/header-section/entity/header-section.entity';
 import { Template } from 'src/models/template/entity/template.entity';
 import {

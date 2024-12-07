@@ -1,5 +1,5 @@
 // src/event-details/entities/event-detail.entity.ts
-import { WeddingDetail } from 'src/models/wedding-details/enitity/wedding-details.enity';
+import { WeddingDetail } from 'src/models/wedding-details/entity/wedding-details.entity';
 import {
   Entity,
   PrimaryGeneratedColumn,

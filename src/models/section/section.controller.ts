@@ -23,14 +23,14 @@ import { Public } from 'src/auth/decorators/public.decorator';
 @Controller('sections')
 @ApiBearerAuth('JWT')
 export class SectionController {
-  constructor(private readonly sectionService: SectionService) {}
+  constructor(private readonly sectionService: SectionService) { }
 
   @Post()
   @Public()
-  @ApiOperation({ summary: 'Tạo mới một section' })
+  @ApiOperation({ summary: 'Create a new section' })
   @ApiResponse({
     status: 201,
-    description: 'Section đã được tạo.',
+    description: 'The section was created successfully.',
     type: Section,
   })
   async create(@Body() createSectionDto: CreateSectionDto): Promise<Section> {
@@ -39,10 +39,10 @@ export class SectionController {
 
   @Get()
   @Public()
-  @ApiOperation({ summary: 'Lấy tất cả các section' })
+  @ApiOperation({ summary: 'Get all sections' })
   @ApiResponse({
     status: 200,
-    description: 'Danh sách các section.',
+    description: 'List of all sections.',
     type: [Section],
   })
   async findAll(): Promise<Section[]> {
@@ -51,18 +51,18 @@ export class SectionController {
 
   @Get(':id')
   @Public()
-  @ApiOperation({ summary: 'Lấy chi tiết một section theo ID' })
-  @ApiResponse({ status: 200, description: 'Chi tiết section.', type: Section })
+  @ApiOperation({ summary: 'Get a section by ID' })
+  @ApiResponse({ status: 200, description: 'Details of the section.', type: Section })
   async findOne(@Param('id') id: number): Promise<Section> {
     return this.sectionService.findOne(id);
   }
 
   @Patch(':id')
   @Public()
-  @ApiOperation({ summary: 'Cập nhật thông tin một section theo ID' })
+  @ApiOperation({ summary: 'Update a section by ID' })
   @ApiResponse({
     status: 200,
-    description: 'Section đã được cập nhật.',
+    description: 'The section was updated successfully.',
     type: Section,
   })
   async update(
@@ -74,8 +74,8 @@ export class SectionController {
 
   @Delete(':id')
   @Public()
-  @ApiOperation({ summary: 'Xóa một section theo ID' })
-  @ApiResponse({ status: 200, description: 'Section đã được xóa.' })
+  @ApiOperation({ summary: 'Delete a section by ID' })
+  @ApiResponse({ status: 200, description: 'The section was deleted successfully.' })
   async remove(@Param('id') id: number): Promise<void> {
     return this.sectionService.remove(id);
   }
