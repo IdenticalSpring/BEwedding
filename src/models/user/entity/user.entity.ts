@@ -69,9 +69,9 @@ export class User {
   @Column({
     type: 'enum',
     enum: SubscriptionPlan,
-    default: SubscriptionPlan.FREE, // Mặc định là gói miễn phí
+    default: SubscriptionPlan.FREE, 
   })
-  subscriptionPlan: SubscriptionPlan; // Trường lưu gói hiện tại của người dùng
+  subscriptionPlan: SubscriptionPlan;
 
   @CreateDateColumn()
   createdAt: Date;
