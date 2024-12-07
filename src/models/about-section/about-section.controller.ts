@@ -24,14 +24,14 @@ import { Public } from 'src/auth/decorators/public.decorator';
 @Controller('about-sections')
 @ApiBearerAuth('JWT')
 export class AboutSectionController {
-  constructor(private readonly aboutSectionService: AboutSectionService) {}
+  constructor(private readonly aboutSectionService: AboutSectionService) { }
 
   @Post()
   @Public()
-  @ApiOperation({ summary: 'Tạo mới phần giới thiệu' })
+  @ApiOperation({ summary: 'Create a new about section' })
   @ApiResponse({
     status: 201,
-    description: 'Phần giới thiệu đã được tạo thành công',
+    description: 'The about section has been created successfully',
     type: AboutSection,
   })
   create(@Body() createAboutSectionDto: CreateAboutSectionDto) {
@@ -40,10 +40,10 @@ export class AboutSectionController {
 
   @Get()
   @Public()
-  @ApiOperation({ summary: 'Lấy tất cả phần giới thiệu' })
+  @ApiOperation({ summary: 'Get all about sections' })
   @ApiResponse({
     status: 200,
-    description: 'Danh sách các phần giới thiệu',
+    description: 'List of all about sections',
     type: [AboutSection],
   })
   findAll() {
@@ -52,23 +52,23 @@ export class AboutSectionController {
 
   @Get(':id')
   @Public()
-  @ApiOperation({ summary: 'Lấy thông tin phần giới thiệu theo ID' })
+  @ApiOperation({ summary: 'Get about section by ID' })
   @ApiResponse({
     status: 200,
-    description: 'Thông tin phần giới thiệu',
+    description: 'Details of the about section',
     type: AboutSection,
   })
-  @ApiResponse({ status: 404, description: 'Không tìm thấy phần giới thiệu' })
+  @ApiResponse({ status: 404, description: 'About section not found' })
   findOne(@Param('id') id: string) {
     return this.aboutSectionService.findOne(id);
   }
 
   @Patch(':id')
   @Public()
-  @ApiOperation({ summary: 'Cập nhật phần giới thiệu' })
+  @ApiOperation({ summary: 'Update an about section' })
   @ApiResponse({
     status: 200,
-    description: 'Phần giới thiệu đã được cập nhật',
+    description: 'The about section has been updated successfully',
     type: AboutSection,
   })
   update(
@@ -80,10 +80,10 @@ export class AboutSectionController {
 
   @Delete(':id')
   @Public()
-  @ApiOperation({ summary: 'Xóa phần giới thiệu' })
+  @ApiOperation({ summary: 'Delete an about section' })
   @ApiResponse({
     status: 204,
-    description: 'Phần giới thiệu đã được xóa',
+    description: 'The about section has been deleted successfully',
   })
   remove(@Param('id') id: string) {
     return this.aboutSectionService.remove(id);
