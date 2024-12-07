@@ -69,7 +69,7 @@ import { AdminGuestListModule } from './admin/guest/guest.module';
     MulterModule.register({
       dest: './uploads',
       limits: {
-        fileSize: 10 * 1024 * 1024,
+        fileSize: 1 * 1024 * 1024,
       },
     }),
     AuthModule,
