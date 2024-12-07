@@ -4,6 +4,7 @@ import {
   UploadedFile,
   UseInterceptors,
   UseGuards,
+  BadRequestException,
 } from '@nestjs/common';
 import { CloudinaryService } from './cloudinary.service';
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -22,7 +23,7 @@ import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 @UseGuards(JwtAuthGuard)
 @ApiBearerAuth('JWT')
 export class ImagesController {
-  constructor(private readonly cloudinaryService: CloudinaryService) {}
+  constructor(private readonly cloudinaryService: CloudinaryService) { }
 
   @Post('upload')
   @ApiOperation({ summary: 'Upload an image to Cloudinary' })
@@ -45,11 +46,16 @@ export class ImagesController {
   })
   @ApiResponse({
     status: 400,
-    description: 'Bad request, image file missing or invalid',
+    description: 'Bad request, missing or invalid image file',
   })
   @UseInterceptors(
-    FileInterceptor('image', { storage: multer.memoryStorage() }),
-  ) // Sử dụng memoryStorage
+    FileInterceptor('image', {
+      storage: multer.memoryStorage(),
+      limits: {
+        fileSize: 1 * 1024 * 1024, 
+      },
+    }),
+  )
   async uploadImage(@UploadedFile() file: Express.Multer.File) {
     if (!file || !file.buffer || file.size === 0) {
       console.error('No file uploaded or file is empty');
@@ -63,54 +69,10 @@ export class ImagesController {
       };
     } catch (error) {
       console.error('Error uploading image:', error);
+      if (error.code === 'LIMIT_FILE_SIZE') {
+        throw new BadRequestException('File size exceeds the 1MB limit');
+      }
       throw new Error('Failed to upload image');
-    }
-  }
-}
-
-@Controller('videos')
-@UseGuards(JwtAuthGuard)
-@ApiBearerAuth('JWT')
-export class VideosController {
-  constructor(private readonly cloudinaryService: CloudinaryService) {}
-
-  @Post('upload')
-  @ApiOperation({ summary: 'Upload a video to Cloudinary' })
-  @ApiConsumes('multipart/form-data')
-  @ApiBody({
-    schema: {
-      type: 'object',
-      properties: {
-        video: {
-          type: 'string',
-          format: 'binary',
-          description: 'Video file to upload',
-        },
-      },
-    },
-  })
-  @ApiResponse({
-    status: 201,
-    description: 'Video uploaded successfully',
-  })
-  @ApiResponse({
-    status: 400,
-    description: 'Bad request, video file missing or invalid',
-  })
-  @UseInterceptors(FileInterceptor('video'))
-  async uploadVideo(@UploadedFile() file: Express.Multer.File) {
-    if (!file || file.size === 0) {
-      throw new Error('No file uploaded or file is empty');
-    }
-    try {
-      const uploadedVideo = await this.cloudinaryService.uploadVideo(file);
-      return {
-        message: 'Video uploaded successfully',
-        url: uploadedVideo.secure_url,
-      };
-    } catch (error) {
-      console.error('Error uploading video:', error);
-      throw new Error('Failed to upload video');
     }
   }
 }

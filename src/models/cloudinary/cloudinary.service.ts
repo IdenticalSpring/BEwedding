@@ -16,28 +16,19 @@ export class CloudinaryService {
     file: Express.Multer.File,
   ): Promise<UploadApiResponse | UploadApiErrorResponse> {
     return new Promise((resolve, reject) => {
-      v2.uploader
-        .upload_stream({ folder: 'eWedding' }, (error, result) => {
-          if (error) return reject(error);
+      v2.uploader.upload_stream(
+        { folder: 'eWedding' },
+        (error, result) => {
+          if (error) {
+            console.error('Cloudinary upload error:', error);
+            return reject(error);  
+          }
           resolve(result);
-        })
-        .end(file.buffer);
+        },
+      ).end(file.buffer);
     });
   }
 
-  async uploadVideo(file: Express.Multer.File): Promise<UploadApiResponse> {
-    return new Promise((resolve, reject) => {
-      v2.uploader
-        .upload_stream(
-          { resource_type: 'video', folder: 'MasterCoding' },
-          (error, result) => {
-            if (error) reject(error);
-            resolve(result);
-          },
-        )
-        .end(file.buffer);
-    });
-  }
   async deleteImage(imageUrl: string): Promise<void> {
     const publicId = this.getPublicIdFromUrl(imageUrl);
     return new Promise((resolve, reject) => {
