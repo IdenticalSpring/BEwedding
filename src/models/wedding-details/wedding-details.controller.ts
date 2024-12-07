@@ -18,7 +18,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { WeddingDetailService } from './wedding-details.service';
-import { WeddingDetail } from './enitity/wedding-details.enity';
+import { WeddingDetail } from './entity/wedding-details.entity';
 import { CreateWeddingDetailDto } from './dto/create-wedding-details.dto';
 import { UpdateWeddingDetailDto } from './dto/update-wedding-details.dto';
 import { Public } from 'src/auth/decorators/public.decorator';

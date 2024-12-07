@@ -5,11 +5,11 @@ import { TemplateService } from './template.service';
 import { TemplateController } from './template.controller';
 import { Template } from './entity/template.entity';
 import { CloudinaryModule } from '../cloudinary/cloudinary.module';
-import { AdminGuard } from 'src/guards/admin.guard';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Template]), CloudinaryModule],
   controllers: [TemplateController],
-  providers: [TemplateService, AdminGuard],
+  providers: [TemplateService],
+  exports: [TemplateService],
 })
 export class TemplateModule {}
