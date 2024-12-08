@@ -1,9 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateThemeDto } from './dto/create-theme.dto';
 import { UpdateThemeDto } from './dto/update-theme.dto';
-import { Theme } from './entity/theme.entity'; 
+import { Theme } from './entity/theme.entity';
 import { Template } from '../template/entity/template.entity';
 
 @Injectable()
@@ -22,13 +22,14 @@ export class ThemeService {
     });
 
     if (!template) {
-      throw new Error('Template not found'); // Throw error if template does not exist
+      throw new NotFoundException(`Template with ID ${createThemeDto.templateId} not found`);
     }
 
-    const theme = this.themeRepository.create(createThemeDto); // Create a theme from the DTO
-    theme.template = template; // Associate the theme with the template
-    return this.themeRepository.save(theme); // Save the theme to the database
+    const theme = this.themeRepository.create(createThemeDto);
+    theme.template = template;  
+    return await this.themeRepository.save(theme); 
   }
+
 
   // Retrieve all themes with pagination
   async findAll(page: number, limit: number) {
@@ -48,32 +49,20 @@ export class ThemeService {
   }
 
   // Retrieve a specific theme by ID with related data and pagination
-  async findOne(id: string, page: number, limit: number) {
+  async findOne(id: string) {
     const theme = await this.themeRepository.findOne({
       where: { id },
-      relations: ['template'], // Include related template data
+      relations: ['template'], // Tìm theme với thông tin template liên quan
     });
 
     if (!theme) {
-      throw new Error('Theme not found'); // Throw error if the theme does not exist
+      throw new NotFoundException(`Theme with ID ${id} not found`);
     }
 
-    // Fetch related templates (assuming a theme can have related templates)
-    const [relatedData, total] = await this.templateRepository.findAndCount({
-      where: { theme: { id } }, // Find templates related to the theme
-      skip: (page - 1) * limit,
-      take: limit,
-    });
-
-    return {
-      theme, // The main theme data
-      relatedData, // Paginated related templates
-      total, // Total count of related templates
-      page,
-      limit,
-      totalPages: Math.ceil(total / limit), // Calculate the total number of pages for related data
-    };
+    return theme; // Trả về theme tìm được
   }
+
+
 
   // Update an existing theme
   async update(id: string, updateThemeDto: UpdateThemeDto) {
@@ -82,12 +71,12 @@ export class ThemeService {
     });
 
     if (!theme) {
-      throw new Error('Theme not found'); // Throw error if the theme does not exist
+      throw new NotFoundException(`Theme with ID ${id} not found`);
     }
 
     // Update the theme with the new data from the DTO
     Object.assign(theme, updateThemeDto);
-    return this.themeRepository.save(theme); // Save the updated theme
+    return await this.themeRepository.save(theme); // Save the updated theme
   }
 
   // Remove a theme by its ID
@@ -97,9 +86,10 @@ export class ThemeService {
     });
 
     if (!theme) {
-      throw new Error('Theme not found'); // Throw error if the theme does not exist
+      throw new NotFoundException(`Theme with ID ${id} not found`);
     }
 
-    await this.themeRepository.remove(theme); // Remove the theme from the database
+    await this.themeRepository.remove(theme); 
   }
+
 }

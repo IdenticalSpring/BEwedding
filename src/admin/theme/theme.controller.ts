@@ -9,7 +9,7 @@ import {
   Query,
 } from '@nestjs/common';
 
-import { ApiBearerAuth, ApiQuery, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Roles } from 'src/auth/decorators/roles.decorator';
 import { CreateThemeDto } from 'src/models/theme/dto/create-theme.dto';
 import { UpdateThemeDto } from 'src/models/theme/dto/update-theme.dto';
@@ -29,36 +29,20 @@ export class AdminThemeController {
 
   @Get()
   async findAll(
-    @Query('page') page = 1, 
-    @Query('limit') limit = 10,
-  ) {
-    const pageNumber = Math.max(1, Number(page));
-    const limitNumber = Math.max(1, Math.min(100, Number(limit))); 
-
-    return this.themeService.findAll(pageNumber, limitNumber);
-  }
-
-  @Get(':id')
-  @ApiQuery({
-    name: 'page',
-    required: false,
-    description: 'Page number',
-    example: 1,
-  })
-  @ApiQuery({
-    name: 'limit',
-    required: false,
-    description: 'Items per page',
-    example: 10,
-  })
-  async findOne(
-    @Param('id') id: string,
     @Query('page') page = 1,
     @Query('limit') limit = 10,
   ) {
     const pageNumber = Math.max(1, Number(page));
     const limitNumber = Math.max(1, Math.min(100, Number(limit)));
-    return this.themeService.findOne(id, pageNumber, limitNumber);
+
+    return this.themeService.findAll(pageNumber, limitNumber);
+  }
+
+  @Get(':id')
+  async findOne(
+    @Param('id') id: string,
+  ) {
+    return this.themeService.findOne(id); 
   }
 
   @Put(':id')
@@ -71,6 +55,6 @@ export class AdminThemeController {
 
   @Delete(':id')
   async remove(@Param('id') id: string) {
-    return this.themeService.remove(id);
+    return this.themeService.remove(id);  
   }
 }
