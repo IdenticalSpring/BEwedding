@@ -64,7 +64,7 @@ import { AdminGuestListModule } from './admin/guest/guest.module';
         AboutSection,
         Section,
       ],
-      synchronize: true,
+      synchronize: false,
     }),
     MulterModule.register({
       dest: './uploads',

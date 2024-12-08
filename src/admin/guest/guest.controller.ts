@@ -9,6 +9,7 @@ import {
   Query,
   HttpException,
   HttpStatus,
+  UseGuards,
 } from '@nestjs/common';
 
 import { ApiBearerAuth, ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
@@ -16,10 +17,13 @@ import { GuestListService } from 'src/models/guest/guest.service';
 import { CreateGuestListDto } from 'src/models/guest/dto/create-guest.dto';
 import { UpdateGuestListDto } from 'src/models/guest/dto/update-guest.dto';
 import { Roles } from 'src/auth/decorators/roles.decorator';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { RolesGuard } from 'src/auth/guards/role-auth.guard';
 
 @ApiTags('admin/GuestList')
 @Controller('admin/guest-list')
 @ApiBearerAuth('JWT')
+@UseGuards(JwtAuthGuard, RolesGuard)
 @Roles('admin')
 export class AdminGuestListController {
   constructor(private readonly guestListService: GuestListService) { }

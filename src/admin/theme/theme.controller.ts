@@ -7,10 +7,13 @@ import {
   Put,
   Delete,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Roles } from 'src/auth/decorators/roles.decorator';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { RolesGuard } from 'src/auth/guards/role-auth.guard';
 import { CreateThemeDto } from 'src/models/theme/dto/create-theme.dto';
 import { UpdateThemeDto } from 'src/models/theme/dto/update-theme.dto';
 import { ThemeService } from 'src/models/theme/theme.service';
@@ -18,6 +21,7 @@ import { ThemeService } from 'src/models/theme/theme.service';
 @ApiTags('admin/Themes')
 @Controller('admin/themes')
 @ApiBearerAuth('JWT')
+@UseGuards(JwtAuthGuard, RolesGuard)
 @Roles('admin')
 export class AdminThemeController {
   constructor(private readonly themeService: ThemeService) { }
@@ -26,7 +30,7 @@ export class AdminThemeController {
   async create(@Body() createThemeDto: CreateThemeDto) {
     return this.themeService.create(createThemeDto);
   }
-
+  @Roles('admin')
   @Get()
   async findAll(
     @Query('page') page = 1,

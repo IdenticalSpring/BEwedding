@@ -6,16 +6,20 @@ import {
   Param,
   Put,
   Delete,
+  UseGuards,
 } from '@nestjs/common';
 import { GuestbookSectionService } from 'src/models/guestbook-section/guestbook-section.service';
 import { CreateGuestbookSectionDto } from 'src/models/guestbook-section/dto/create-guestbook-section.dto';
 import { UpdateGuestbookSectionDto } from 'src/models/guestbook-section/dto/update-guestbook-section.dto';
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Roles } from 'src/auth/decorators/roles.decorator';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { RolesGuard } from 'src/auth/guards/role-auth.guard';
 
 @ApiTags('admin/Guestbook Section')
 @Controller('admin/guestbook-section')
 @ApiBearerAuth('JWT')
+@UseGuards(JwtAuthGuard, RolesGuard)
 @Roles('admin')
 export class AdminGuestbookSectionController {
   constructor(

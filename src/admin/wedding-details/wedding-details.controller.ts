@@ -9,6 +9,7 @@ import {
   Delete,
   HttpCode,
   HttpStatus,
+  UseGuards,
 } from '@nestjs/common';
 
 import {
@@ -23,10 +24,13 @@ import { CreateWeddingDetailDto } from 'src/models/wedding-details/dto/create-we
 import { UpdateWeddingDetailDto } from 'src/models/wedding-details/dto/update-wedding-details.dto'; 
 import { Public } from 'src/auth/decorators/public.decorator';
 import { Roles } from 'src/auth/decorators/roles.decorator';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { RolesGuard } from 'src/auth/guards/role-auth.guard';
 
 @ApiTags('admin/wedding-details')
 @Controller('admin/wedding-details')
 @ApiBearerAuth('JWT')
+@UseGuards(JwtAuthGuard, RolesGuard)
 @Roles('admin')
 export class AdminWeddingDetailController {
   constructor(private readonly weddingDetailService: WeddingDetailService) {}

@@ -7,6 +7,7 @@ import {
   Patch,
   Delete,
   NotFoundException,
+  UseGuards,
 } from '@nestjs/common';
 import { HeaderSectionService } from 'src/models/header-section/header-section.service';
 import { CreateHeaderSectionDto } from 'src/models/header-section/dto/create-header-section.dto';
@@ -19,10 +20,13 @@ import {
 } from '@nestjs/swagger';
 import { HeaderSection } from 'src/models/header-section/entity/header-section.entity';
 import { Roles } from 'src/auth/decorators/roles.decorator';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { RolesGuard } from 'src/auth/guards/role-auth.guard';
 
 @ApiTags('admin/header-sections')
 @Controller('admin/header-sections')
 @ApiBearerAuth('JWT')
+@UseGuards(JwtAuthGuard, RolesGuard)
 @Roles('admin')
 export class AdminHeaderSectionController {
   constructor(private readonly headerSectionService: HeaderSectionService) { }
