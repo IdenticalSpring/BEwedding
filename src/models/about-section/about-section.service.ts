@@ -63,6 +63,7 @@ export class AboutSectionService {
     return this.aboutSectionRepository.save(aboutSection);
   }
 
+
   async remove(id: string) {
     const aboutSection = await this.aboutSectionRepository.findOne({
       where: { id },

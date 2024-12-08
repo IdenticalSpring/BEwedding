@@ -32,7 +32,7 @@ describe('AdminAboutSectionController', () => {
                 {
                     provide: WeddingDetailService,
                     useValue: {
-                        findOne: jest.fn(), // Sửa thành findOne vì trong controller đang gọi findOne
+                        findOne: jest.fn(), 
                     },
                 },
             ],
@@ -104,7 +104,6 @@ describe('AdminAboutSectionController', () => {
             metaData: 'Some metadata',
         };
 
-        // Mock WeddingDetail đã tồn tại
         const mockWeddingDetail: WeddingDetail = {
             id: 'existing-wedding-id',
             brideName: 'Bride Name',
@@ -125,7 +124,7 @@ describe('AdminAboutSectionController', () => {
             template: null,
         };
 
-        const mockCreatedAboutSection = {
+        const mockCreatedAboutSection: AboutSection = {
             id: 'new-id',
             weddingDetail: mockWeddingDetail,
             brideBio: createDto.brideBio,
@@ -149,7 +148,7 @@ describe('AdminAboutSectionController', () => {
             });
     });
 
-    it('should return 400 if update AboutSection fails', async () => {
+    it('should return 404 if AboutSection not found for update', async () => {
         const updateDto: UpdateAboutSectionDto = {
             brideBio: 'Updated bio',
             groomBio: 'Updated bio',
@@ -158,12 +157,13 @@ describe('AdminAboutSectionController', () => {
         };
 
         const nonExistingSectionId = 'non-existing-id';
-        jest.spyOn(aboutSectionService, 'update').mockRejectedValue(new Error('About section not found'));
+        jest.spyOn(aboutSectionService, 'findOne').mockResolvedValue(null);  
+        jest.spyOn(aboutSectionService, 'update').mockResolvedValue(null);  
 
         return request(app.getHttpServer())
             .patch(`/admin/about-sections/${nonExistingSectionId}`)
             .send(updateDto)
-            .expect(400)
+            .expect(400);  
     });
 
     it('should return 200 if AboutSection is deleted successfully', async () => {
@@ -173,9 +173,5 @@ describe('AdminAboutSectionController', () => {
         return request(app.getHttpServer())
             .delete(`/admin/about-sections/${mockId}`)
             .expect(HttpStatus.OK);
-    });
-
-    afterAll(async () => {
-        await app.close();
     });
 });

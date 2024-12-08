@@ -9,6 +9,7 @@ import {
   Delete,
   HttpCode,
   HttpStatus,
+  NotFoundException,
 } from '@nestjs/common';
 
 import {
@@ -61,8 +62,12 @@ export class WeddingDetailController {
     type: WeddingDetail,
   })
   @ApiResponse({ status: 404, description: 'Không tìm thấy đám cưới' })
-  findOne(@Param('id') id: string) {
-    return this.weddingDetailService.findOne(id);
+  async findOne(@Param('id') id: string) {
+    const weddingDetail = await this.weddingDetailService.findOne(id);
+    if (!weddingDetail) {
+      throw new NotFoundException(`Wedding detail with ID ${id} not found`);
+    }
+    return weddingDetail;
   }
 
   @Patch(':id')

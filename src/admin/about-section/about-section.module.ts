@@ -6,10 +6,11 @@ import { AboutSection } from 'src/models/about-section/entity/about-section.enti
 import { WeddingDetail } from 'src/models/wedding-details/entity/wedding-details.entity';
 import { AboutSectionService } from 'src/models/about-section/about-section.service';
 import { WeddingDetailService } from 'src/models/wedding-details/wedding-details.service';
+import { AuthModule } from 'src/auth/auth.module';
 
 
 @Module({
-  imports: [TypeOrmModule.forFeature([AboutSection, WeddingDetail])], 
+  imports: [TypeOrmModule.forFeature([AboutSection, WeddingDetail]),AuthModule], 
   controllers: [AdminAboutSectionController],
   providers: [AboutSectionService,WeddingDetailService],
 })
