@@ -73,7 +73,6 @@ export class AdminUserController {
       throw new Error('Invalid file type for avatar');
     }
 
-    console.log('Avatar file:', avatarFile); 
 
     const user = await this.userService.update(id, updateUserDto, avatarFile);
     return user;

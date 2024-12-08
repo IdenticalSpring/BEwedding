@@ -3,16 +3,33 @@ import { AdminAboutSectionController } from './about-section.controller';
 import { AboutSectionService } from 'src/models/about-section/about-section.service';
 import { WeddingDetailService } from 'src/models/wedding-details/wedding-details.service';
 import * as request from 'supertest';
-import { INestApplication } from '@nestjs/common';
+import { INestApplication, NotFoundException } from '@nestjs/common';
 import { HttpStatus } from '@nestjs/common';
 import { CreateAboutSectionDto } from 'src/models/about-section/dto/create-about-section.dto';
 import { UpdateAboutSectionDto } from 'src/models/about-section/dto/update-about-section.dto';
 import { AboutSection } from 'src/models/about-section/entity/about-section.entity';
 import { WeddingDetail } from 'src/models/wedding-details/entity/wedding-details.entity';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { RolesGuard } from 'src/auth/guards/role-auth.guard';
+import { MockJwtAuthGuard } from 'src/test/mocks/jwt-auth.guard'; // Đường dẫn có thể khác tùy cấu trúc dự án của bạn
+import { MockRolesGuard } from 'src/test/mocks/roles.guard';   // Đường dẫn có thể khác tùy cấu trúc dự án của bạn
+
 describe('AdminAboutSectionController', () => {
     let app: INestApplication;
     let aboutSectionService: AboutSectionService;
     let weddingDetailService: WeddingDetailService;
+
+    const mockAboutSectionService = {
+        create: jest.fn(),
+        findAll: jest.fn(),
+        findOne: jest.fn(),
+        update: jest.fn(),
+        remove: jest.fn(),
+    };
+
+    const mockWeddingDetailService = {
+        findOne: jest.fn(),
+    };
 
     beforeEach(async () => {
         const module: TestingModule = await Test.createTestingModule({
@@ -20,22 +37,19 @@ describe('AdminAboutSectionController', () => {
             providers: [
                 {
                     provide: AboutSectionService,
-                    useValue: {
-                        create: jest.fn(),
-                        findAll: jest.fn(),
-                        findOne: jest.fn(),
-                        update: jest.fn(),
-                        remove: jest.fn(),
-                    },
+                    useValue: mockAboutSectionService,
                 },
                 {
                     provide: WeddingDetailService,
-                    useValue: {
-                        findOne: jest.fn(), 
-                    },
+                    useValue: mockWeddingDetailService,
                 },
             ],
-        }).compile();
+        })
+            .overrideGuard(JwtAuthGuard)
+            .useClass(MockJwtAuthGuard)
+            .overrideGuard(RolesGuard)
+            .useClass(MockRolesGuard)
+            .compile();
 
         app = module.createNestApplication();
         await app.init();
@@ -47,8 +61,6 @@ describe('AdminAboutSectionController', () => {
         const controller = app.get<AdminAboutSectionController>(AdminAboutSectionController);
         expect(controller).toBeDefined();
     });
-
-
 
     it('should return 200 if about section is found for GET /admin/about-sections/:id', async () => {
         const mockId = 'existing-id';
@@ -72,7 +84,7 @@ describe('AdminAboutSectionController', () => {
             template: null,
         };
 
-        const mockAboutSection = {
+        const mockAboutSection: AboutSection = {
             id: 'existing-id',
             weddingDetail: mockWeddingDetail,
             brideBio: 'Bride Bio',
@@ -147,7 +159,7 @@ describe('AdminAboutSectionController', () => {
             });
     });
 
-    it('should return 404 if AboutSection not found for update', async () => {
+    it('should return 400 if AboutSection not found for update', async () => {
         const updateDto: UpdateAboutSectionDto = {
             brideBio: 'Updated bio',
             groomBio: 'Updated bio',
@@ -156,13 +168,13 @@ describe('AdminAboutSectionController', () => {
         };
 
         const nonExistingSectionId = 'non-existing-id';
-        jest.spyOn(aboutSectionService, 'findOne').mockResolvedValue(null);  
-        jest.spyOn(aboutSectionService, 'update').mockResolvedValue(null);  
+        jest.spyOn(aboutSectionService, 'findOne').mockResolvedValue(null);
+        jest.spyOn(aboutSectionService, 'update').mockResolvedValue(null);
 
         return request(app.getHttpServer())
             .patch(`/admin/about-sections/${nonExistingSectionId}`)
             .send(updateDto)
-            .expect(400);  
+            .expect(HttpStatus.BAD_REQUEST);
     });
 
     it('should return 200 if AboutSection is deleted successfully', async () => {
@@ -172,5 +184,9 @@ describe('AdminAboutSectionController', () => {
         return request(app.getHttpServer())
             .delete(`/admin/about-sections/${mockId}`)
             .expect(HttpStatus.OK);
+    });
+
+    afterAll(async () => {
+        await app.close();
     });
 });
