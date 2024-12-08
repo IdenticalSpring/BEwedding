@@ -44,8 +44,13 @@ export class AdminGuestbookSectionController {
   @ApiResponse({ status: 200, description: 'Return the guestbook section' })
   @ApiResponse({ status: 404, description: 'Guestbook section not found' })
   async findOne(@Param('id') id: string) {
-    return this.guestbookSectionService.findOne(id);
+    const guestbookSection = await this.guestbookSectionService.findOne(id);
+    if (!guestbookSection) {
+      throw new Error('Guestbook section not found');
+    }
+    return guestbookSection;
   }
+
 
   @Put(':id')
   @ApiOperation({ summary: 'Update a guestbook section by ID' })
@@ -58,7 +63,14 @@ export class AdminGuestbookSectionController {
     @Param('id') id: string,
     @Body() updateGuestbookSectionDto: UpdateGuestbookSectionDto,
   ) {
-    return this.guestbookSectionService.update(id, updateGuestbookSectionDto);
+    const guestbookSection = await this.guestbookSectionService.update(
+      id,
+      updateGuestbookSectionDto,
+    );
+    if (!guestbookSection) {
+      throw new Error('Guestbook section not found');
+    }
+    return guestbookSection;
   }
 
   @Delete(':id')
