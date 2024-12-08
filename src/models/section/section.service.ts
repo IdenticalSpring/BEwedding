@@ -10,7 +10,7 @@ export class SectionService {
   constructor(
     @InjectRepository(Section)
     private readonly sectionRepository: Repository<Section>,
-  ) {}
+  ) { }
 
   async create(createSectionDto: CreateSectionDto): Promise<Section> {
     const section = this.sectionRepository.create(createSectionDto);
@@ -33,13 +33,13 @@ export class SectionService {
     id: number,
     updateSectionDto: UpdateSectionDto,
   ): Promise<Section> {
-    const section = await this.findOne(id);
+    const section = await this.findOne(id); 
     Object.assign(section, updateSectionDto);
     return this.sectionRepository.save(section);
   }
 
   async remove(id: number): Promise<void> {
-    const section = await this.findOne(id);
+    const section = await this.findOne(id); 
     await this.sectionRepository.remove(section);
   }
 }
