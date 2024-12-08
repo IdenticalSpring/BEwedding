@@ -7,9 +7,11 @@ import {
   Put,
   Delete,
   Query,
+  HttpException,
+  HttpStatus,
 } from '@nestjs/common';
 
-import { ApiBearerAuth, ApiQuery, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { GuestListService } from './guest.service';
 import { CreateGuestListDto } from './dto/create-guest.dto';
 import { UpdateGuestListDto } from './dto/update-guest.dto';
@@ -20,15 +22,19 @@ import { Public } from 'src/auth/decorators/public.decorator';
 @ApiBearerAuth('JWT')
 export class GuestListController {
   constructor(private readonly guestListService: GuestListService) {}
-
   @Public()
   @Post()
+  @ApiOperation({ summary: 'Create a new guest list entry' })
+  @ApiResponse({
+    status: 201,
+    description: 'The guest list entry has been successfully created.',
+  })
   async create(@Body() createGuestListDto: CreateGuestListDto) {
     return this.guestListService.create(createGuestListDto);
   }
 
-  @Public()
   @Get()
+  @ApiOperation({ summary: 'Get all guest list entries' })
   @ApiQuery({
     name: 'weddingId',
     description: 'ID of the wedding to filter guests',
@@ -45,30 +51,63 @@ export class GuestListController {
     description: 'Items per page',
     example: 10,
   })
+  @ApiResponse({ status: 200, description: 'Return a list of guest list entries' })
   async findAll(
     @Query('weddingId') weddingId: string,
     @Query('page') page = 1,
     @Query('limit') limit = 10,
   ) {
     const pageNumber = Math.max(1, Number(page));
-    const limitNumber = Math.max(1, Math.min(100, Number(limit))); // Giới hạn tối đa 100
+    const limitNumber = Math.max(1, Math.min(100, Number(limit)));
+    if (!weddingId) {
+      throw new HttpException('Wedding ID is required', HttpStatus.BAD_REQUEST);
+    }
+
     return this.guestListService.findAll(weddingId, pageNumber, limitNumber);
   }
+
   @Get(':id')
+  @ApiOperation({ summary: 'Get a guest list entry by ID' })
+  @ApiResponse({ status: 200, description: 'Return the guest list entry' })
+  @ApiResponse({ status: 404, description: 'Guest list entry not found' })
   async findOne(@Param('id') id: string) {
-    return this.guestListService.findOne(id);
+    const guest = await this.guestListService.findOne(id);
+    if (!guest) {
+      throw new HttpException('Not Found', HttpStatus.NOT_FOUND);
+    }
+    return guest;
   }
 
   @Put(':id')
+  @ApiOperation({ summary: 'Update a guest list entry by ID' })
+  @ApiResponse({
+    status: 200,
+    description: 'The guest list entry has been successfully updated.',
+  })
+  @ApiResponse({ status: 404, description: 'Guest list entry not found' })
   async update(
     @Param('id') id: string,
     @Body() updateGuestListDto: UpdateGuestListDto,
   ) {
-    return this.guestListService.update(id, updateGuestListDto);
+    const updatedGuest = await this.guestListService.update(id, updateGuestListDto);
+    if (!updatedGuest) {
+      throw new HttpException('Not Found', HttpStatus.NOT_FOUND);
+    }
+    return updatedGuest;
   }
 
   @Delete(':id')
+  @ApiOperation({ summary: 'Delete a guest list entry by ID' })
+  @ApiResponse({
+    status: 200,
+    description: 'The guest list entry has been successfully deleted.',
+  })
+  @ApiResponse({ status: 404, description: 'Guest list entry not found' })
   async remove(@Param('id') id: string) {
-    return this.guestListService.remove(id);
+    const guest = await this.guestListService.remove(id);
+    if (!guest) {
+      throw new HttpException('Not Found', HttpStatus.NOT_FOUND);
+    }
+    return;
   }
 }
