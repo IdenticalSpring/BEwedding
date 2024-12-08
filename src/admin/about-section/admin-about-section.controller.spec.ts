@@ -9,7 +9,6 @@ import { CreateAboutSectionDto } from 'src/models/about-section/dto/create-about
 import { UpdateAboutSectionDto } from 'src/models/about-section/dto/update-about-section.dto';
 import { AboutSection } from 'src/models/about-section/entity/about-section.entity';
 import { WeddingDetail } from 'src/models/wedding-details/entity/wedding-details.entity';
-
 describe('AdminAboutSectionController', () => {
     let app: INestApplication;
     let aboutSectionService: AboutSectionService;

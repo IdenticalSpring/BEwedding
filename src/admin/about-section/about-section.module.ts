@@ -10,7 +10,7 @@ import { AuthModule } from 'src/auth/auth.module';
 
 
 @Module({
-  imports: [TypeOrmModule.forFeature([AboutSection, WeddingDetail]),AuthModule], 
+  imports: [TypeOrmModule.forFeature([AboutSection, WeddingDetail])], 
   controllers: [AdminAboutSectionController],
   providers: [AboutSectionService,WeddingDetailService],
 })

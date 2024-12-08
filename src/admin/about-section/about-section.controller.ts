@@ -8,7 +8,6 @@ import {
   Delete,
   NotFoundException,
   BadRequestException,
-  HttpStatus,
   UseGuards,
 } from '@nestjs/common';
 import { CreateAboutSectionDto } from 'src/models/about-section/dto/create-about-section.dto';
@@ -26,6 +25,7 @@ import { Roles } from 'src/auth/decorators/roles.decorator';
 import { WeddingDetailService } from 'src/models/wedding-details/wedding-details.service';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { RolesGuard } from 'src/auth/guards/role-auth.guard';
+
 
 @ApiTags('admin/about-sections')
 @Controller('admin/about-sections')
