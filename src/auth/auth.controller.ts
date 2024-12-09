@@ -1,4 +1,4 @@
-import { Controller, Post, Body, UseGuards, Request, Get, UnauthorizedException, Query } from '@nestjs/common';
+import { Controller, Post, Body, UseGuards, Request, Get, UnauthorizedException, Query, BadRequestException } from '@nestjs/common';
 import { ApiTags, ApiResponse, ApiBearerAuth, ApiBody, ApiOperation } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
 import { RegisterDto } from './dto/register.dto';
@@ -11,10 +11,17 @@ export class AuthController {
     constructor(private readonly authService: AuthService) { }
 
     @Post('register')
-    @Public() 
+    @Public()
     @ApiResponse({ status: 201, description: 'User registered successfully.' })
     @ApiResponse({ status: 409, description: 'Email or phone already exists.' })
     async register(@Body() registerDto: RegisterDto) {
+        if (!registerDto.name || !registerDto.phone || !registerDto.address || !registerDto.email || !registerDto.password) {
+            throw new BadRequestException('Missing required fields');
+        }
+        if (registerDto.password.length < 8) {
+            throw new BadRequestException('Password not strong enough.');
+        }
+
         return this.authService.register(registerDto);
     }
     @Public() 

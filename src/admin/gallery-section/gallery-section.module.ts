@@ -4,9 +4,10 @@ import { GallerySectionService } from 'src/models/gallery-section/gallery-sectio
 import { GallerySection } from 'src/models/gallery-section/entity/gallery-section.entity'; 
 import { WeddingDetail } from 'src/models/wedding-details/entity/wedding-details.entity'; 
 import { AdminGallerySectionController } from './gallery-section.controller';
+import { AuthModule } from 'src/auth/auth.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([GallerySection, WeddingDetail])],
+  imports: [TypeOrmModule.forFeature([GallerySection, WeddingDetail]), AuthModule],
   controllers: [AdminGallerySectionController],
   providers: [GallerySectionService],
 })

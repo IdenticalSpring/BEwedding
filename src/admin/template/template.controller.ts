@@ -11,6 +11,7 @@ import {
   HttpCode,
   HttpStatus,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -27,10 +28,13 @@ import { Template } from 'src/models/template/entity/template.entity';
 import { CloudinaryService } from 'src/models/cloudinary/cloudinary.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Roles } from 'src/auth/decorators/roles.decorator';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { RolesGuard } from 'src/auth/guards/role-auth.guard';
 
 @ApiTags('admin/Templates')
 @Controller('admin/templates')
 @ApiBearerAuth('JWT')
+@UseGuards(JwtAuthGuard, RolesGuard)
 @Roles('admin')
 export class AdminTemplateController {
   constructor(

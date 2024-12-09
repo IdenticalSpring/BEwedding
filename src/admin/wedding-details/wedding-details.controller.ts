@@ -9,6 +9,8 @@ import {
   Delete,
   HttpCode,
   HttpStatus,
+  UseGuards,
+  NotFoundException,
 } from '@nestjs/common';
 
 import {
@@ -23,10 +25,13 @@ import { CreateWeddingDetailDto } from 'src/models/wedding-details/dto/create-we
 import { UpdateWeddingDetailDto } from 'src/models/wedding-details/dto/update-wedding-details.dto'; 
 import { Public } from 'src/auth/decorators/public.decorator';
 import { Roles } from 'src/auth/decorators/roles.decorator';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { RolesGuard } from 'src/auth/guards/role-auth.guard';
 
 @ApiTags('admin/wedding-details')
 @Controller('admin/wedding-details')
 @ApiBearerAuth('JWT')
+@UseGuards(JwtAuthGuard, RolesGuard)
 @Roles('admin')
 export class AdminWeddingDetailController {
   constructor(private readonly weddingDetailService: WeddingDetailService) {}
@@ -55,6 +60,7 @@ export class AdminWeddingDetailController {
     return this.weddingDetailService.findAll();
   }
 
+  // In WeddingDetailController
   @Get(':id')
   @ApiOperation({ summary: 'Lấy thông tin đám cưới theo ID' })
   @ApiResponse({
@@ -63,8 +69,12 @@ export class AdminWeddingDetailController {
     type: WeddingDetail,
   })
   @ApiResponse({ status: 404, description: 'Không tìm thấy đám cưới' })
-  findOne(@Param('id') id: string) {
-    return this.weddingDetailService.findOne(id);
+  async findOne(@Param('id') id: string) {
+    const weddingDetail = await this.weddingDetailService.findOne(id);
+    if (!weddingDetail) {
+      throw new NotFoundException(`Wedding detail with ID ${id} not found`);
+    }
+    return weddingDetail;
   }
 
   @Patch(':id')

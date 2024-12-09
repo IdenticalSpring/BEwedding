@@ -6,6 +6,7 @@ import {
   Param,
   Patch,
   Delete,
+  NotFoundException,
 } from '@nestjs/common';
 import { HeaderSectionService } from './header-section.service';
 import { CreateHeaderSectionDto } from './dto/create-header-section.dto';
@@ -26,65 +27,73 @@ export class HeaderSectionController {
   constructor(private readonly headerSectionService: HeaderSectionService) { }
 
   @Post()
-  @Public()
   @ApiOperation({ summary: 'Create a new header section' })
   @ApiResponse({
     status: 201,
-    description: 'The header section was created successfully',
+    description: 'The header section has been successfully created',
     type: HeaderSection,
   })
-  create(@Body() createHeaderSectionDto: CreateHeaderSectionDto) {
+  async create(@Body() createHeaderSectionDto: CreateHeaderSectionDto) {
     return this.headerSectionService.create(createHeaderSectionDto);
   }
 
   @Get()
-  @Public()
   @ApiOperation({ summary: 'Get all header sections' })
   @ApiResponse({
     status: 200,
-    description: 'List of header sections',
+    description: 'List of all header sections',
     type: [HeaderSection],
   })
-  findAll() {
+  async findAll() {
     return this.headerSectionService.findAll();
   }
 
   @Get(':id')
-  @Public()
-  @ApiOperation({ summary: 'Get a header section by ID' })
+  @ApiOperation({ summary: 'Get header section by ID' })
   @ApiResponse({
     status: 200,
-    description: 'Details of the header section',
+    description: 'Header section details',
     type: HeaderSection,
   })
   @ApiResponse({ status: 404, description: 'Header section not found' })
-  findOne(@Param('id') id: string) {
-    return this.headerSectionService.findOne(id);
+  async findOne(@Param('id') id: string) {
+    const headerSection = await this.headerSectionService.findOne(id);
+    if (!headerSection) {
+      throw new NotFoundException('Header section not found');
+    }
+    return headerSection;
   }
 
   @Patch(':id')
-  @Public()
-  @ApiOperation({ summary: 'Update a header section' })
+  @ApiOperation({ summary: 'Update header section' })
   @ApiResponse({
     status: 200,
-    description: 'The header section was updated successfully',
+    description: 'Header section has been successfully updated',
     type: HeaderSection,
   })
-  update(
+  async update(
     @Param('id') id: string,
     @Body() updateHeaderSectionDto: UpdateHeaderSectionDto,
   ) {
-    return this.headerSectionService.update(id, updateHeaderSectionDto);
+    const updatedHeaderSection = await this.headerSectionService.update(id, updateHeaderSectionDto);
+    if (!updatedHeaderSection) {
+      throw new NotFoundException('Header section not found');
+    }
+    return updatedHeaderSection;
   }
 
   @Delete(':id')
-  @Public()
-  @ApiOperation({ summary: 'Delete a header section' })
+  @ApiOperation({ summary: 'Delete header section' })
   @ApiResponse({
     status: 204,
-    description: 'The header section was deleted successfully',
+    description: 'Header section has been successfully deleted',
   })
-  remove(@Param('id') id: string) {
-    return this.headerSectionService.remove(id);
+
+  async remove(@Param('id') id: string) {
+    const result = await this.headerSectionService.remove(id);
+    if (result === null) {
+      throw new NotFoundException('Header section not found');
+    }
   }
+
 }

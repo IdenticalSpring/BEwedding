@@ -11,8 +11,8 @@ import * as bcrypt from 'bcrypt';
 import { MoreThan, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as crypto from 'crypto';
-import { EmailService } from 'src/email/email.service';
-import { User, UserRole } from 'src/models/user/entity/user.entity';
+import { EmailService } from '../email/email.service'; 
+import { User, UserRole } from '../models/user/entity/user.entity';
 @Injectable()
 export class AuthService {
   constructor(
@@ -156,7 +156,11 @@ export class AuthService {
     const user = await this.userRepository.findOne({ where: { email } });
 
     if (!user) {
-      throw new NotFoundException('User not found');
+      throw new BadRequestException({
+        message: 'User not found',
+        error: 'Not Found',
+      });
+
     }
 
     if (user.isActive) {
@@ -217,7 +221,7 @@ export class AuthService {
     }
   }
 
-  async resetPassword(token: string, newPassword: string): Promise<string> {
+  async resetPassword(token: string, newPassword: string): Promise<{ message: string }> {
     const user = await this.userRepository.findOne({
       where: {
         resetPasswordToken: token,
@@ -236,6 +240,7 @@ export class AuthService {
     user.resetPasswordExpires = null;
     await this.userRepository.save(user);
 
-    return 'Password reset successful';
+    return { message: 'Password reset successful' };
   }
+
 }

@@ -6,6 +6,9 @@ import {
   Param,
   Patch,
   Delete,
+  NotFoundException,
+  BadRequestException,
+  UseGuards,
 } from '@nestjs/common';
 import { CreateAboutSectionDto } from 'src/models/about-section/dto/create-about-section.dto';
 
@@ -19,13 +22,21 @@ import { AboutSectionService } from 'src/models/about-section/about-section.serv
 import { AboutSection } from 'src/models/about-section/entity/about-section.entity';
 import { UpdateAboutSectionDto } from 'src/models/about-section/dto/update-about-section.dto';
 import { Roles } from 'src/auth/decorators/roles.decorator';
+import { WeddingDetailService } from 'src/models/wedding-details/wedding-details.service';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { RolesGuard } from 'src/auth/guards/role-auth.guard';
+
 
 @ApiTags('admin/about-sections')
 @Controller('admin/about-sections')
 @ApiBearerAuth('JWT')
+@UseGuards(JwtAuthGuard, RolesGuard)
 @Roles('admin')
 export class AdminAboutSectionController {
-  constructor(private readonly aboutSectionService: AboutSectionService) { }
+  constructor(private readonly aboutSectionService: AboutSectionService,
+    private readonly weddingDetailService: WeddingDetailService, 
+  ) 
+  { }
 
   @Post()
   @ApiOperation({ summary: 'Create a new about section' })
@@ -37,6 +48,8 @@ export class AdminAboutSectionController {
   create(@Body() createAboutSectionDto: CreateAboutSectionDto) {
     return this.aboutSectionService.create(createAboutSectionDto);
   }
+
+
 
   @Get()
   @ApiOperation({ summary: 'Get all about sections' })
@@ -57,9 +70,14 @@ export class AdminAboutSectionController {
     type: AboutSection,
   })
   @ApiResponse({ status: 404, description: 'About section not found' })
-  findOne(@Param('id') id: string) {
-    return this.aboutSectionService.findOne(id);
+  async findOne(@Param('id') id: string) {
+    const aboutSection = await this.aboutSectionService.findOne(id);
+    if (!aboutSection) {
+      throw new NotFoundException('About section not found');
+    }
+    return aboutSection;
   }
+
 
   @Patch(':id')
   @ApiOperation({ summary: 'Update about section' })
@@ -68,12 +86,14 @@ export class AdminAboutSectionController {
     description: 'The about section has been updated successfully',
     type: AboutSection,
   })
-  update(
-    @Param('id') id: string,
-    @Body() updateAboutSectionDto: UpdateAboutSectionDto,
-  ) {
-    return this.aboutSectionService.update(id, updateAboutSectionDto);
+  async update(@Param('id') id: string, @Body() updateDto: UpdateAboutSectionDto) {
+    const aboutSection = await this.aboutSectionService.findOne(id);
+    if (!aboutSection) {
+      throw new BadRequestException('About section not found');
+    }
+    return this.aboutSectionService.update(id, updateDto);
   }
+
 
   @Delete(':id')
   @ApiOperation({ summary: 'Delete about section' })
@@ -81,7 +101,9 @@ export class AdminAboutSectionController {
     status: 204,
     description: 'The about section has been deleted successfully',
   })
-  remove(@Param('id') id: string) {
+
+  async remove(@Param('id') id: string) {
     return this.aboutSectionService.remove(id);
   }
+
 }

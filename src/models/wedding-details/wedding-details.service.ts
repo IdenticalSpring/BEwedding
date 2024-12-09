@@ -47,4 +47,10 @@ export class WeddingDetailService {
     const weddingDetail = await this.findOne(id);
     return this.weddingDetailRepository.remove(weddingDetail);
   }
+  async findById(id: string): Promise<WeddingDetail | null> {
+    return this.weddingDetailRepository.findOne({
+      where: { id }, 
+    });
+  }
+
 }

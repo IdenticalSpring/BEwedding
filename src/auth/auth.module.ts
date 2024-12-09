@@ -14,12 +14,12 @@ import { User } from 'src/models/user/entity/user.entity';
 @Module({
   imports: [
     TypeOrmModule.forFeature([User]),
-    PassportModule,
+    PassportModule.register({ defaultStrategy: 'jwt' }),
     JwtModule.registerAsync({
       useFactory: async (configService: ConfigService) => ({
         secret: configService.get<string>('JWT_SECRET'),
         signOptions: {
-          expiresIn: configService.get<string>('JWT_EXPIRES_IN', '1h'),
+          expiresIn: configService.get<string>('JWT_EXPIRES_IN'),
         },
       }),
       inject: [ConfigService],

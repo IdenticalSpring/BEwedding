@@ -6,6 +6,7 @@ import {
   Param,
   Patch,
   Delete,
+  UseGuards,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -18,10 +19,13 @@ import { CreateSectionDto } from 'src/models/section/dto/create-section.dto';
 import { UpdateSectionDto } from 'src/models/section/dto/update-section.dto';
 import { Section } from 'src/models/section/entity/section.entity';
 import { Roles } from 'src/auth/decorators/roles.decorator';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { RolesGuard } from 'src/auth/guards/role-auth.guard';
 
 @ApiTags('admin/sections')
 @Controller('admin/sections')
 @ApiBearerAuth('JWT')
+@UseGuards(JwtAuthGuard, RolesGuard)
 @Roles('admin')
 export class AdminSectionController {
   constructor(private readonly sectionService: SectionService) { }

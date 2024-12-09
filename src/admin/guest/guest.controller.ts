@@ -7,6 +7,9 @@ import {
   Put,
   Delete,
   Query,
+  HttpException,
+  HttpStatus,
+  UseGuards,
 } from '@nestjs/common';
 
 import { ApiBearerAuth, ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
@@ -14,10 +17,13 @@ import { GuestListService } from 'src/models/guest/guest.service';
 import { CreateGuestListDto } from 'src/models/guest/dto/create-guest.dto';
 import { UpdateGuestListDto } from 'src/models/guest/dto/update-guest.dto';
 import { Roles } from 'src/auth/decorators/roles.decorator';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { RolesGuard } from 'src/auth/guards/role-auth.guard';
 
 @ApiTags('admin/GuestList')
 @Controller('admin/guest-list')
 @ApiBearerAuth('JWT')
+@UseGuards(JwtAuthGuard, RolesGuard)
 @Roles('admin')
 export class AdminGuestListController {
   constructor(private readonly guestListService: GuestListService) { }
@@ -57,7 +63,13 @@ export class AdminGuestListController {
     @Query('limit') limit = 10,
   ) {
     const pageNumber = Math.max(1, Number(page));
-    const limitNumber = Math.max(1, Math.min(100, Number(limit))); // Maximum limit is 100
+    const limitNumber = Math.max(1, Math.min(100, Number(limit)));
+
+    // Kiểm tra weddingId nếu cần
+    if (!weddingId) {
+      throw new HttpException('Wedding ID is required', HttpStatus.BAD_REQUEST);
+    }
+
     return this.guestListService.findAll(weddingId, pageNumber, limitNumber);
   }
 
@@ -66,7 +78,11 @@ export class AdminGuestListController {
   @ApiResponse({ status: 200, description: 'Return the guest list entry' })
   @ApiResponse({ status: 404, description: 'Guest list entry not found' })
   async findOne(@Param('id') id: string) {
-    return this.guestListService.findOne(id);
+    const guest = await this.guestListService.findOne(id);
+    if (!guest) {
+      throw new HttpException('Not Found', HttpStatus.NOT_FOUND);
+    }
+    return guest;
   }
 
   @Put(':id')
@@ -80,7 +96,11 @@ export class AdminGuestListController {
     @Param('id') id: string,
     @Body() updateGuestListDto: UpdateGuestListDto,
   ) {
-    return this.guestListService.update(id, updateGuestListDto);
+    const updatedGuest = await this.guestListService.update(id, updateGuestListDto);
+    if (!updatedGuest) {
+      throw new HttpException('Not Found', HttpStatus.NOT_FOUND);
+    }
+    return updatedGuest;
   }
 
   @Delete(':id')
@@ -91,6 +111,10 @@ export class AdminGuestListController {
   })
   @ApiResponse({ status: 404, description: 'Guest list entry not found' })
   async remove(@Param('id') id: string) {
-    return this.guestListService.remove(id);
+    const guest = await this.guestListService.remove(id);
+    if (!guest) {
+      throw new HttpException('Not Found', HttpStatus.NOT_FOUND);
+    }
+    return; 
   }
 }

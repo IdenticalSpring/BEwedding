@@ -14,7 +14,7 @@ export class HeaderSectionService {
     private readonly headerSectionRepository: Repository<HeaderSection>,
     @InjectRepository(WeddingDetail)
     private readonly weddingDetailRepository: Repository<WeddingDetail>,
-  ) {}
+  ) { }
 
   async create(createHeaderSectionDto: CreateHeaderSectionDto) {
     const weddingDetail = await this.weddingDetailRepository.findOne({
@@ -33,15 +33,21 @@ export class HeaderSectionService {
     return this.headerSectionRepository.save(headerSection);
   }
 
-  findAll() {
+  async findAll() {
     return this.headerSectionRepository.find({ relations: ['weddingDetail'] });
   }
 
-  findOne(id: string) {
-    return this.headerSectionRepository.findOne({
+  async findOne(id: string) {
+    const headerSection = await this.headerSectionRepository.findOne({
       where: { id },
       relations: ['weddingDetail'],
     });
+
+    if (!headerSection) {
+      throw new Error('Header section not found');
+    }
+
+    return headerSection;
   }
 
   async update(id: string, updateHeaderSectionDto: UpdateHeaderSectionDto) {

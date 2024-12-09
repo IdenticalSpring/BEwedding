@@ -10,7 +10,7 @@ import {
 import { GuestbookSectionService } from './guestbook-section.service';
 import { CreateGuestbookSectionDto } from './dto/create-guestbook-section.dto';
 import { UpdateGuestbookSectionDto } from './dto/update-guestbook-section.dto';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Public } from 'src/auth/decorators/public.decorator';
 
 @ApiTags('Guestbook Section')
@@ -22,34 +22,63 @@ export class GuestbookSectionController {
   ) {}
 
   @Post()
-  @Public()
+  @ApiOperation({ summary: 'Create a new guestbook section' })
+  @ApiResponse({
+    status: 201,
+    description: 'The guestbook section has been successfully created.',
+  })
   async create(@Body() createGuestbookSectionDto: CreateGuestbookSectionDto) {
     return this.guestbookSectionService.create(createGuestbookSectionDto);
   }
 
   @Get()
-  @Public()
+  @ApiOperation({ summary: 'Get all guestbook sections' })
+  @ApiResponse({ status: 200, description: 'Return all guestbook sections' })
   async findAll() {
     return this.guestbookSectionService.findAll();
   }
 
   @Get(':id')
-  @Public()
+  @ApiOperation({ summary: 'Get a guestbook section by ID' })
+  @ApiResponse({ status: 200, description: 'Return the guestbook section' })
+  @ApiResponse({ status: 404, description: 'Guestbook section not found' })
   async findOne(@Param('id') id: string) {
-    return this.guestbookSectionService.findOne(id);
+    const guestbookSection = await this.guestbookSectionService.findOne(id);
+    if (!guestbookSection) {
+      throw new Error('Guestbook section not found');
+    }
+    return guestbookSection;
   }
 
+
   @Put(':id')
-  @Public()
+  @ApiOperation({ summary: 'Update a guestbook section by ID' })
+  @ApiResponse({
+    status: 200,
+    description: 'The guestbook section has been successfully updated.',
+  })
+  @ApiResponse({ status: 404, description: 'Guestbook section not found' })
   async update(
     @Param('id') id: string,
     @Body() updateGuestbookSectionDto: UpdateGuestbookSectionDto,
   ) {
-    return this.guestbookSectionService.update(id, updateGuestbookSectionDto);
+    const guestbookSection = await this.guestbookSectionService.update(
+      id,
+      updateGuestbookSectionDto,
+    );
+    if (!guestbookSection) {
+      throw new Error('Guestbook section not found');
+    }
+    return guestbookSection;
   }
 
   @Delete(':id')
-  @Public()
+  @ApiOperation({ summary: 'Delete a guestbook section by ID' })
+  @ApiResponse({
+    status: 200,
+    description: 'The guestbook section has been successfully deleted.',
+  })
+  @ApiResponse({ status: 404, description: 'Guestbook section not found' })
   async remove(@Param('id') id: string) {
     return this.guestbookSectionService.remove(id);
   }

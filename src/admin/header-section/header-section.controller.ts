@@ -6,6 +6,8 @@ import {
   Param,
   Patch,
   Delete,
+  NotFoundException,
+  UseGuards,
 } from '@nestjs/common';
 import { HeaderSectionService } from 'src/models/header-section/header-section.service';
 import { CreateHeaderSectionDto } from 'src/models/header-section/dto/create-header-section.dto';
@@ -18,10 +20,13 @@ import {
 } from '@nestjs/swagger';
 import { HeaderSection } from 'src/models/header-section/entity/header-section.entity';
 import { Roles } from 'src/auth/decorators/roles.decorator';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { RolesGuard } from 'src/auth/guards/role-auth.guard';
 
 @ApiTags('admin/header-sections')
 @Controller('admin/header-sections')
 @ApiBearerAuth('JWT')
+@UseGuards(JwtAuthGuard, RolesGuard)
 @Roles('admin')
 export class AdminHeaderSectionController {
   constructor(private readonly headerSectionService: HeaderSectionService) { }
@@ -57,7 +62,11 @@ export class AdminHeaderSectionController {
   })
   @ApiResponse({ status: 404, description: 'Header section not found' })
   async findOne(@Param('id') id: string) {
-    return this.headerSectionService.findOne(id);
+    const headerSection = await this.headerSectionService.findOne(id);
+    if (!headerSection) {
+      throw new NotFoundException('Header section not found');
+    }
+    return headerSection;
   }
 
   @Patch(':id')
@@ -71,7 +80,11 @@ export class AdminHeaderSectionController {
     @Param('id') id: string,
     @Body() updateHeaderSectionDto: UpdateHeaderSectionDto,
   ) {
-    return this.headerSectionService.update(id, updateHeaderSectionDto);
+    const updatedHeaderSection = await this.headerSectionService.update(id, updateHeaderSectionDto);
+    if (!updatedHeaderSection) {
+      throw new NotFoundException('Header section not found');
+    }
+    return updatedHeaderSection;
   }
 
   @Delete(':id')
@@ -80,7 +93,12 @@ export class AdminHeaderSectionController {
     status: 204,
     description: 'Header section has been successfully deleted',
   })
+
   async remove(@Param('id') id: string) {
-    return this.headerSectionService.remove(id);
+    const result = await this.headerSectionService.remove(id);
+    if (result === null) {
+      throw new NotFoundException('Header section not found');
+    }
   }
+
 }
