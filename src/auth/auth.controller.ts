@@ -15,7 +15,7 @@ export class AuthController {
     @ApiResponse({ status: 201, description: 'User registered successfully.' })
     @ApiResponse({ status: 409, description: 'Email or phone already exists.' })
     async register(@Body() registerDto: RegisterDto) {
-        if (!registerDto.name || !registerDto.phone || !registerDto.address || !registerDto.email || !registerDto.password) {
+        if (!registerDto.name ||  !registerDto.email || !registerDto.password) {
             throw new BadRequestException('Missing required fields');
         }
         if (registerDto.password.length < 8) {
