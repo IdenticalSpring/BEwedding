@@ -39,6 +39,7 @@ import { AdminWeddingDetailModule } from './admin/wedding-details/wedding-detail
 import { AdminThemeModule } from './admin/theme/theme.module';
 import { AdminGuestListModule } from './admin/guest/guest.module';
 import { TemplateUserModule } from './models/template-user/template-user.module';
+import { TemplateUser } from './models/template-user/entity/template-user.entity';
 
 @Module({
   imports: [
@@ -64,6 +65,7 @@ import { TemplateUserModule } from './models/template-user/template-user.module'
         WeddingDetail,
         AboutSection,
         Section,
+        TemplateUser,
       ],
       synchronize: false,
     }),

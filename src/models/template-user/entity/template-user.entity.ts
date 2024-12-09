@@ -54,5 +54,6 @@ export class TemplateUser {
   sections: Section[];
 
   @ManyToOne(() => User, (user) => user.templates)
+  @JoinColumn({ name: 'userId' })
   user: User;
 }

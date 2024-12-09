@@ -30,8 +30,8 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { RolesGuard } from 'src/auth/guards/role-auth.guard';
 import { Roles } from 'src/auth/decorators/roles.decorator';
 
-@ApiTags('Templates')
-@Controller('templates')
+@ApiTags('TemplatesUser')
+@Controller('templatesUser')
 @ApiBearerAuth('JWT')
 export class TemplateUserController {
   constructor(

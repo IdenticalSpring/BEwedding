@@ -76,6 +76,6 @@ export class User {
   updatedAt: Date;
 
   // Quan hệ OneToMany từ User đến Template
-  @OneToMany(() => TemplateUser, (template) => template.user)
-  templates: Template[];
+  @OneToMany(() => TemplateUser, (templateUser) => templateUser.user)
+  templates: TemplateUser[];
 }
