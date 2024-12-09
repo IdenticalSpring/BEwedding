@@ -56,4 +56,7 @@ export class TemplateUser {
   @ManyToOne(() => User, (user) => user.templates)
   @JoinColumn({ name: 'userId' })
   user: User;
+
+  @Column({ type: 'varchar', length: 255, nullable: true })
+  url: string;  
 }

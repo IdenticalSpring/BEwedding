@@ -70,7 +70,7 @@ import { SectionUser } from './models/section-user/entity/section-user.entity';
         TemplateUser,
         SectionUser
       ],
-      synchronize: true,
+      synchronize: false,
     }),
     MulterModule.register({
       dest: './uploads',

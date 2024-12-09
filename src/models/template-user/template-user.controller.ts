@@ -12,6 +12,7 @@ import {
   HttpStatus,
   Query,
   UseGuards,
+  NotFoundException,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -29,6 +30,7 @@ import { CloudinaryService } from '../cloudinary/cloudinary.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { RolesGuard } from 'src/auth/guards/role-auth.guard';
 import { Roles } from 'src/auth/decorators/roles.decorator';
+import { Public } from 'src/auth/decorators/public.decorator';
 
 @ApiTags('TemplatesUser')
 @Controller('templatesUser')
@@ -119,4 +121,19 @@ export class TemplateUserController {
   async remove(@Param('id') id: string) {
     return this.templateUserService.remove(id);
   }
+  @Public()
+  @Get('by-url/:url')  
+  @ApiOperation({ summary: 'Find a template by URL' })
+  @ApiResponse({ status: 200, description: 'Template found', type: TemplateUser })
+  @ApiResponse({ status: 404, description: 'Template not found' })
+  async findByUrl(@Param('url') url: string) {
+    const template = await this.templateUserService.findByUrl(url);
+    if (!template) {
+      throw new NotFoundException('Template not found');
+    }
+
+    return template;
+  }
+
+
 }

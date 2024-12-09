@@ -14,8 +14,18 @@ export class TemplateUserService {
   ) {}
 
   async create(createTemplateDto: CreateTemplateUserDto): Promise<TemplateUser> {
-    const template = this.templateRepository.create(createTemplateDto);
-    return this.templateRepository.save(template);
+    try {
+
+      const template = this.templateRepository.create(createTemplateDto);
+
+      const savedTemplate = await this.templateRepository.save(template);
+
+      return savedTemplate;
+    } catch (error) {
+      console.error('Lỗi khi lưu template:', error);
+
+      throw new Error('Không thể lưu template: ' + error.message);
+    }
   }
 
   async findAll(
@@ -60,5 +70,11 @@ export class TemplateUserService {
     const template = await this.findOne(id);
 
     await this.templateRepository.remove(template);
+  }
+  async findByUrl(url: string): Promise<TemplateUser | undefined> {
+    return this.templateRepository.findOne({
+      where: { url: url },
+      relations: ['sections'],
+    });
   }
 }
