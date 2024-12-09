@@ -1,3 +1,4 @@
+import { TemplateUser } from 'src/models/template-user/entity/template-user.entity';
 import { Template } from 'src/models/template/entity/template.entity';
 import {
   Entity,
@@ -7,8 +8,8 @@ import {
   JoinColumn,
 } from 'typeorm';
 
-@Entity('sections')
-export class Section {
+@Entity('sectionUser')
+export class SectionUser {
   @PrimaryGeneratedColumn('uuid')
   id: number;
 
@@ -24,11 +25,11 @@ export class Section {
   @Column({ type: 'uuid', nullable: true })
   templateId: string;
 
-  @ManyToOne(() => Template, (template) => template.sections, {
+  @ManyToOne(() => TemplateUser, (templateUser) => templateUser.sections, {
     onDelete: 'CASCADE',
   })
   @JoinColumn({ name: 'templateId' })
-  template: Template;
+  template: TemplateUser;
 
   @Column({ type: 'varchar', nullable: true })
   position: string;

@@ -7,7 +7,7 @@ import {
   MaxLength,
 } from 'class-validator';
 
-export class CreateSectionDto {
+export class CreateSectionUserDto {
   @ApiProperty({ description: 'Tên của section', maxLength: 255 })
   @IsOptional()
   name: string;

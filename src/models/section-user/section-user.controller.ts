@@ -13,17 +13,17 @@ import {
   ApiResponse,
   ApiBearerAuth,
 } from '@nestjs/swagger';
-import { SectionService } from './section.service';
-import { CreateSectionDto } from './dto/create-section.dto';
-import { UpdateSectionDto } from './dto/update-section.dto';
-import { Section } from './entity/section.entity';
+import { SectionUserService } from './section-user.service';
+import { CreateSectionUserDto } from './dto/create-section-user.dto';
+import { UpdateSectionUserDto } from './dto/update-section-user.dto';
+import { SectionUser } from './entity/section-user.entity';
 import { Public } from 'src/auth/decorators/public.decorator';
 
-@ApiTags('sections')
-@Controller('sections')
+@ApiTags('sectionsUser')
+@Controller('sectionsUser')
 @ApiBearerAuth('JWT')
-export class SectionController {
-  constructor(private readonly sectionService: SectionService) { }
+export class SectionUserController {
+  constructor(private readonly sectionService: SectionUserService) { }
 
   @Post()
   @Public()
@@ -31,9 +31,9 @@ export class SectionController {
   @ApiResponse({
     status: 201,
     description: 'The section was created successfully.',
-    type: Section,
+    type: SectionUser,
   })
-  async create(@Body() createSectionDto: CreateSectionDto): Promise<Section> {
+  async create(@Body() createSectionDto: CreateSectionUserDto): Promise<SectionUser> {
     return this.sectionService.create(createSectionDto);
   }
 
@@ -43,17 +43,17 @@ export class SectionController {
   @ApiResponse({
     status: 200,
     description: 'List of all sections.',
-    type: [Section],
+    type: [SectionUser],
   })
-  async findAll(): Promise<Section[]> {
+  async findAll(): Promise<SectionUser[]> {
     return this.sectionService.findAll();
   }
 
   @Get(':id')
   @Public()
   @ApiOperation({ summary: 'Get a section by ID' })
-  @ApiResponse({ status: 200, description: 'Details of the section.', type: Section })
-  async findOne(@Param('id') id: number): Promise<Section> {
+  @ApiResponse({ status: 200, description: 'Details of the section.', type: SectionUser })
+  async findOne(@Param('id') id: number): Promise<SectionUser> {
     return this.sectionService.findOne(id);
   }
 
@@ -63,12 +63,12 @@ export class SectionController {
   @ApiResponse({
     status: 200,
     description: 'The section was updated successfully.',
-    type: Section,
+    type: SectionUser,
   })
   async update(
     @Param('id') id: number,
-    @Body() updateSectionDto: UpdateSectionDto,
-  ): Promise<Section> {
+    @Body() updateSectionDto: UpdateSectionUserDto,
+  ): Promise<SectionUser> {
     return this.sectionService.update(id, updateSectionDto);
   }
 

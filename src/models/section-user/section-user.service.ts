@@ -1,27 +1,27 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { CreateSectionDto } from './dto/create-section.dto';
-import { UpdateSectionDto } from './dto/update-section.dto';
-import { Section } from './entity/section.entity';
+import { CreateSectionUserDto } from './dto/create-section-user.dto';
+import { UpdateSectionUserDto } from './dto/update-section-user.dto';
+import { SectionUser } from './entity/section-user.entity';
 
 @Injectable()
-export class SectionService {
+export class SectionUserService {
   constructor(
-    @InjectRepository(Section)
-    private readonly sectionRepository: Repository<Section>,
+    @InjectRepository(SectionUser)
+    private readonly sectionRepository: Repository<SectionUser>,
   ) { }
 
-  async create(createSectionDto: CreateSectionDto): Promise<Section> {
+  async create(createSectionDto: CreateSectionUserDto): Promise<SectionUser> {
     const section = this.sectionRepository.create(createSectionDto);
     return this.sectionRepository.save(section);
   }
 
-  async findAll(): Promise<Section[]> {
+  async findAll(): Promise<SectionUser[]> {
     return this.sectionRepository.find();
   }
 
-  async findOne(id: number): Promise<Section> {
+  async findOne(id: number): Promise<SectionUser> {
     const section = await this.sectionRepository.findOne({ where: { id } });
     if (!section) {
       throw new NotFoundException(`Section with ID ${id} not found`);
@@ -31,8 +31,8 @@ export class SectionService {
 
   async update(
     id: number,
-    updateSectionDto: UpdateSectionDto,
-  ): Promise<Section> {
+    updateSectionDto: UpdateSectionUserDto,
+  ): Promise<SectionUser> {
     const section = await this.findOne(id); 
     Object.assign(section, updateSectionDto);
     return this.sectionRepository.save(section);

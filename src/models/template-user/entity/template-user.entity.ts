@@ -1,3 +1,4 @@
+import { SectionUser } from 'src/models/section-user/entity/section-user.entity';
 import { Section } from 'src/models/section/entity/section.entity';
 import { Theme } from 'src/models/theme/entity/theme.entity';
 import { User } from 'src/models/user/entity/user.entity';
@@ -50,9 +51,8 @@ export class TemplateUser {
   weddingDetails: WeddingDetail[];
 
 
-  @OneToMany(() => Section, (section) => section.template, { cascade: true })
-  sections: Section[];
-
+  @OneToMany(() => SectionUser, (sectionUser) => sectionUser.template, { cascade: true })
+  sections: SectionUser[];
   @ManyToOne(() => User, (user) => user.templates)
   @JoinColumn({ name: 'userId' })
   user: User;

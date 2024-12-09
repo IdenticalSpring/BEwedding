@@ -40,6 +40,8 @@ import { AdminThemeModule } from './admin/theme/theme.module';
 import { AdminGuestListModule } from './admin/guest/guest.module';
 import { TemplateUserModule } from './models/template-user/template-user.module';
 import { TemplateUser } from './models/template-user/entity/template-user.entity';
+import { SectionUserModule } from './models/section-user/section-user.module';
+import { SectionUser } from './models/section-user/entity/section-user.entity';
 
 @Module({
   imports: [
@@ -66,8 +68,9 @@ import { TemplateUser } from './models/template-user/entity/template-user.entity
         AboutSection,
         Section,
         TemplateUser,
+        SectionUser
       ],
-      synchronize: false,
+      synchronize: true,
     }),
     MulterModule.register({
       dest: './uploads',
@@ -89,6 +92,7 @@ import { TemplateUser } from './models/template-user/entity/template-user.entity
     WeddingDetailModule,
     SectionModule,
     TemplateUserModule,
+    SectionUserModule,
     // Cloudinary
     CloudinaryModule,
 
