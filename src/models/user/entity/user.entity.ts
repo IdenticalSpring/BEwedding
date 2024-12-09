@@ -1,18 +1,13 @@
+import { TemplateUser } from 'src/models/template-user/entity/template-user.entity';
 import { Template } from 'src/models/template/entity/template.entity';
-import {
-  Entity,
-  Column,
-  PrimaryGeneratedColumn,
-  CreateDateColumn,
-  UpdateDateColumn,
-  OneToMany,
-} from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, OneToMany } from 'typeorm';
 
 export enum UserRole {
   USER = 'user',
   ADMIN = 'admin',
   MODERATOR = 'moderator',
 }
+
 export enum SubscriptionPlan {
   FREE = 'free',
   BASIC = 'basic',
@@ -59,6 +54,7 @@ export class User {
 
   @Column({ type: 'date', nullable: true })
   dateOfBirth: Date;
+
   @Column({
     type: 'enum',
     enum: UserRole,
@@ -69,7 +65,7 @@ export class User {
   @Column({
     type: 'enum',
     enum: SubscriptionPlan,
-    default: SubscriptionPlan.FREE, 
+    default: SubscriptionPlan.FREE,
   })
   subscriptionPlan: SubscriptionPlan;
 
@@ -78,4 +74,8 @@ export class User {
 
   @UpdateDateColumn()
   updatedAt: Date;
+
+  // Quan hệ OneToMany từ User đến Template
+  @OneToMany(() => TemplateUser, (template) => template.user)
+  templates: Template[];
 }

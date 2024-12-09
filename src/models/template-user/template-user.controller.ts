@@ -21,27 +21,33 @@ import {
   ApiConsumes,
   ApiBearerAuth,
 } from '@nestjs/swagger';
-import { TemplateService } from 'src/models/template/template.service';
-import { CreateTemplateDto } from 'src/models/template/dto/create-template.dto';
-import { UpdateTemplateDto } from 'src/models/template/dto/update-template.dto';
-import { Template } from 'src/models/template/entity/template.entity';
-import { CloudinaryService } from 'src/models/cloudinary/cloudinary.service';
+import { TemplateUserService } from './template-user.service';
+import { CreateTemplateUserDto } from './dto/create-template-user.dto';
+import { UpdateTemplateUserDto } from './dto/update-template-user.dto';
+import { TemplateUser } from './entity/template-user.entity';
+import { CloudinaryService } from '../cloudinary/cloudinary.service';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { Roles } from 'src/auth/decorators/roles.decorator';
-import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { RolesGuard } from 'src/auth/guards/role-auth.guard';
+import { Roles } from 'src/auth/decorators/roles.decorator';
 
-@ApiTags('admin/Templates')
-@Controller('admin/templates')
+@ApiTags('Templates')
+@Controller('templates')
 @ApiBearerAuth('JWT')
-@UseGuards(JwtAuthGuard, RolesGuard)
-@Roles('admin')
-export class AdminTemplateController {
+export class TemplateUserController {
   constructor(
-    private readonly templateService: TemplateService,
+    private readonly templateUserService: TemplateUserService,
     private readonly cloudinaryService: CloudinaryService,
   ) { }
 
+
+
+  @Get(':id')
+  @ApiOperation({ summary: 'Get details of a template' })
+  @ApiResponse({ status: 200, description: 'Template details' })
+  @ApiResponse({ status: 404, description: 'Template not found' })
+  async findOne(@Param('id') id: string) {
+    return this.templateUserService.findOne(id);
+  }
   @Post()
   @HttpCode(HttpStatus.CREATED)
   @ApiOperation({ summary: 'Create a new template' })
@@ -60,38 +66,17 @@ export class AdminTemplateController {
   })
   @ApiResponse({ status: 201, description: 'Template created successfully' })
   @ApiResponse({ status: 400, description: 'Invalid input data' })
-  @UseInterceptors(FileInterceptor('thumbnail')) // Handles file uploads
+  @UseInterceptors(FileInterceptor('thumbnail')) 
   async create(
-    @Body() createTemplateDto: CreateTemplateDto,
+    @Body() createTemplateDto: CreateTemplateUserDto,
     @UploadedFile() file: Express.Multer.File,
   ) {
     if (file) {
       const uploadedImage = await this.cloudinaryService.uploadImage(file);
-      createTemplateDto.thumbnailUrl = uploadedImage.secure_url; // Save image URL
+      createTemplateDto.thumbnailUrl = uploadedImage.secure_url;
     }
-    return this.templateService.create(createTemplateDto);
+    return this.templateUserService.create(createTemplateDto);
   }
-
-  @Get()
-  @ApiOperation({ summary: 'Get a list of all templates' })
-  @ApiResponse({ status: 200, description: 'List of templates' })
-  async findAll(
-    @Query('page') page: string = '1',
-    @Query('limit') limit: string = '12',
-  ) {
-    const pageNumber = parseInt(page, 10) || 1;
-    const limitNumber = parseInt(limit, 10) || 12;
-    return this.templateService.findAll(pageNumber, limitNumber);
-  }
-
-  @Get(':id')
-  @ApiOperation({ summary: 'Get a template by ID' })
-  @ApiResponse({ status: 200, description: 'Template details' })
-  @ApiResponse({ status: 404, description: 'Template not found' })
-  async findOne(@Param('id') id: string) {
-    return this.templateService.findOne(id);
-  }
-
   @Patch(':id')
   @ApiOperation({ summary: 'Update a template by ID' })
   @ApiConsumes('multipart/form-data')
@@ -110,19 +95,19 @@ export class AdminTemplateController {
   @ApiResponse({
     status: 200,
     description: 'Template updated successfully',
-    type: Template,
+    type: TemplateUser,
   })
   @ApiResponse({ status: 404, description: 'Template not found' })
   async update(
     @Param('id') id: string,
-    @Body() updateTemplateDto: UpdateTemplateDto,
+    @Body() updateTemplateDto: UpdateTemplateUserDto,
     @UploadedFile() file: Express.Multer.File,
   ) {
     if (file) {
       const uploadedImage = await this.cloudinaryService.uploadImage(file);
-      updateTemplateDto.thumbnailUrl = uploadedImage.secure_url; // Save image URL
+      updateTemplateDto.thumbnailUrl = uploadedImage.secure_url; 
     }
-    return this.templateService.update(id, updateTemplateDto);
+    return this.templateUserService.update(id, updateTemplateDto);
   }
 
   @Delete(':id')
@@ -132,6 +117,6 @@ export class AdminTemplateController {
   @ApiResponse({ status: 204, description: 'Template deleted successfully' })
   @ApiResponse({ status: 404, description: 'Template not found' })
   async remove(@Param('id') id: string) {
-    return this.templateService.remove(id);
+    return this.templateUserService.remove(id);
   }
 }

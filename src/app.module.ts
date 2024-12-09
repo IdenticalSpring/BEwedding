@@ -38,6 +38,7 @@ import { AdminUserModule } from './admin/user/user.module';
 import { AdminWeddingDetailModule } from './admin/wedding-details/wedding-details.module';
 import { AdminThemeModule } from './admin/theme/theme.module';
 import { AdminGuestListModule } from './admin/guest/guest.module';
+import { TemplateUserModule } from './models/template-user/template-user.module';
 
 @Module({
   imports: [
@@ -85,6 +86,7 @@ import { AdminGuestListModule } from './admin/guest/guest.module';
     HeaderSectionsModule,
     WeddingDetailModule,
     SectionModule,
+    TemplateUserModule,
     // Cloudinary
     CloudinaryModule,
 
