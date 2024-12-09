@@ -78,7 +78,4 @@ export class User {
 
   @UpdateDateColumn()
   updatedAt: Date;
-
-  @OneToMany(() => Template, (template) => template.user)
-  templates: Template[];
 }
