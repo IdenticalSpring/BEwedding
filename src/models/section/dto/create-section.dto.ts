@@ -9,8 +9,7 @@ import {
 
 export class CreateSectionDto {
   @ApiProperty({ description: 'Tên của section', maxLength: 255 })
-  @IsString()
-  @MaxLength(255)
+  @IsOptional()
   name: string;
 
   @ApiProperty({ description: 'Chi tiết của section', required: false })
@@ -44,6 +43,5 @@ export class CreateSectionDto {
     example: { key: 'value' },
   })
   @IsOptional()
-  @IsJSON()
   metadata?: Record<string, any>;
 }

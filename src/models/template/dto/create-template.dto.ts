@@ -1,6 +1,6 @@
 // src/template/dto/create-template.dto.ts
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEnum, IsNotEmpty, IsString, IsUrl, Length } from 'class-validator';
+import { IsEnum, IsNotEmpty, IsOptional, IsString, IsUrl, Length } from 'class-validator';
 
 export class CreateTemplateDto {
   @ApiProperty({
@@ -16,8 +16,7 @@ export class CreateTemplateDto {
     description: 'URL hình ảnh xem trước của mẫu',
     example: 'https://example.com/thumbnail.png',
   })
-  @IsNotEmpty()
-  @IsUrl()
+  @IsOptional()
   thumbnailUrl?: string;
 
   @ApiProperty({
@@ -32,7 +31,7 @@ export class CreateTemplateDto {
     description: 'Data về templates',
     example: 'A modern landing page template with responsive design.',
   })
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
   metaData: string;
 
