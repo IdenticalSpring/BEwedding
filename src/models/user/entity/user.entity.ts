@@ -1,4 +1,4 @@
-import { Template } from 'src/models/template/entity/template.entity';
+import { templateUser } from 'src/models/template-user/entity/template-user.entity';
 import {
   Entity,
   Column,
@@ -69,7 +69,7 @@ export class User {
   @Column({
     type: 'enum',
     enum: SubscriptionPlan,
-    default: SubscriptionPlan.FREE, 
+    default: SubscriptionPlan.FREE,
   })
   subscriptionPlan: SubscriptionPlan;
 
@@ -78,4 +78,6 @@ export class User {
 
   @UpdateDateColumn()
   updatedAt: Date;
+  @OneToMany(() => templateUser, (template_user) => template_user.user)
+  template_user: templateUser[];
 }

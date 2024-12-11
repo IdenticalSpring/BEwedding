@@ -38,6 +38,10 @@ import { AdminUserModule } from './admin/user/user.module';
 import { AdminWeddingDetailModule } from './admin/wedding-details/wedding-details.module';
 import { AdminThemeModule } from './admin/theme/theme.module';
 import { AdminGuestListModule } from './admin/guest/guest.module';
+import { SectionUser } from './models/section-user/entity/section-user.entity';
+import { templateUser } from './models/template-user/entity/template-user.entity';
+import { TemplateUserModule } from './models/template-user/template-user.module';
+import { SectionUserModule } from './models/section-user/section-user.module';
 
 @Module({
   imports: [
@@ -63,6 +67,8 @@ import { AdminGuestListModule } from './admin/guest/guest.module';
         WeddingDetail,
         AboutSection,
         Section,
+        SectionUser,
+        templateUser,
       ],
       synchronize: false,
     }),
@@ -85,6 +91,8 @@ import { AdminGuestListModule } from './admin/guest/guest.module';
     HeaderSectionsModule,
     WeddingDetailModule,
     SectionModule,
+    TemplateUserModule,
+    SectionUserModule,
     // Cloudinary
     CloudinaryModule,
 
@@ -98,7 +106,7 @@ import { AdminGuestListModule } from './admin/guest/guest.module';
     AdminTemplateModule,
     AdminUserModule,
     AdminWeddingDetailModule,
-    AdminThemeModule
+    AdminThemeModule,
   ],
   providers: [
     {
