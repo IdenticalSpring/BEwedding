@@ -15,7 +15,7 @@ export class CreateSectionUserDto {
   @ApiProperty({ description: 'Chi tiết của section', required: false })
   @IsOptional()
   @IsString()
-  details?: string;
+  style?: Record<string, any>;
 
   @ApiProperty({
     description: 'Theme của section',
