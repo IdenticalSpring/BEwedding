@@ -35,6 +35,13 @@ export class CreateTemplateUserDto {
   description: string;
 
   @ApiProperty({
+    description: 'Id người dùng',
+  })
+  @IsOptional()
+  @IsString()
+  userId: number;
+
+  @ApiProperty({
     description: 'Data về templates',
     example: 'A modern landing page template with responsive design.',
   })

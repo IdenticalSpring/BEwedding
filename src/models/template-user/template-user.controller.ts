@@ -47,9 +47,10 @@ export class TemplateController {
       properties: {
         name: { type: 'string' },
         description: { type: 'string' },
-        thumbnail: { type: 'string', format: 'binary' },
+        thumbnailUrl: { type: 'string' },
         accessType: { type: 'string' },
         metaData: { type: 'string' },
+        userId: { type: 'number' },
       },
     },
   })

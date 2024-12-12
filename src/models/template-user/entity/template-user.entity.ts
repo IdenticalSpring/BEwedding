@@ -10,6 +10,7 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   ManyToOne,
+  JoinColumn,
 } from 'typeorm';
 
 @Entity('template_user')
@@ -36,6 +37,9 @@ export class templateUser {
   })
   accessType: 'FREE' | 'VIP';
 
+  @Column()
+  userId: number;
+
   @CreateDateColumn()
   createdAt: Date;
 
@@ -49,6 +53,7 @@ export class templateUser {
   weddingDetails: WeddingDetail[];
 
   @ManyToOne(() => User, (user) => user.template_user, { onDelete: 'CASCADE' })
+  @JoinColumn({ name: 'userId' })
   user: User;
 
   @OneToMany(() => Section, (section) => section.template, { cascade: true })
