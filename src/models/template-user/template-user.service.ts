@@ -45,7 +45,7 @@ export class TemplateUserService {
   async findOne(id: string): Promise<templateUser> {
     const template = await this.templateRepository.findOne({
       where: { id },
-      relations: ['sections'],
+      relations: ['section_user'],
     });
     if (!template) {
       throw new NotFoundException(`Template with ID "${id}" not found`);

@@ -24,7 +24,7 @@ export class SectionUser {
   @Column({ type: 'uuid', nullable: true })
   template_userId: string;
 
-  @ManyToOne(() => templateUser, (template) => template.sections, {
+  @ManyToOne(() => templateUser, (template) => template.section_user, {
     onDelete: 'CASCADE',
   })
   @JoinColumn({ name: 'template_userId' })
