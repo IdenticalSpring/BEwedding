@@ -52,6 +52,32 @@ export class TemplateUserService {
     }
     return template;
   }
+  async findAllByUserId(
+    userId: number | string,
+    page: number = 1,
+    limit: number = 10,
+  ): Promise<{
+    data: templateUser[];
+    total: number;
+    page: number;
+    limit: number;
+  }> {
+    const numericUserId =
+      typeof userId === 'string' ? parseInt(userId, 10) : userId;
+
+    const [data, total] = await this.templateRepository.findAndCount({
+      where: { user: { id: numericUserId } },
+      take: limit,
+      skip: (page - 1) * limit,
+    });
+
+    return {
+      data,
+      total,
+      page,
+      limit,
+    };
+  }
 
   async update(
     id: string,

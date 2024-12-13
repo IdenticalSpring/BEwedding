@@ -12,6 +12,7 @@ import {
   HttpStatus,
   Query,
   UseGuards,
+  BadRequestException,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -68,18 +69,6 @@ export class TemplateController {
     return this.templateService.create(createTemplateDto);
   }
 
-  @Get()
-  @ApiOperation({ summary: 'Get all templates' })
-  @ApiResponse({ status: 200, description: 'List of all templates' })
-  async findAll(
-    @Query('page') page: string = '1',
-    @Query('limit') limit: string = '12',
-  ) {
-    const pageNumber = parseInt(page, 10) || 1;
-    const limitNumber = parseInt(limit, 10) || 12;
-    return this.templateService.findAll(pageNumber, limitNumber);
-  }
-
   @Get(':id')
   @ApiOperation({ summary: 'Get details of a template' })
   @ApiResponse({ status: 200, description: 'Template details' })
@@ -87,6 +76,32 @@ export class TemplateController {
   async findOne(@Param('id') id: string) {
     return this.templateService.findOne(id);
   }
+  @Get()
+  @ApiOperation({ summary: 'Get all templates by userId with pagination' })
+  @ApiResponse({
+    status: 200,
+    description: 'List of templates for a specific user',
+  })
+  async findAllByUser(
+    @Query('userId') userId: string,
+    @Query('page') page: string = '1',
+    @Query('limit') limit: string = '10',
+  ) {
+    const pageNumber = parseInt(page, 10) || 1;
+    const limitNumber = parseInt(limit, 10) || 10;
+
+    if (!userId) {
+      throw new BadRequestException('userId is required');
+    }
+
+    // Gọi service với userId đã được chuyển đổi
+    return this.templateService.findAllByUserId(
+      parseInt(userId, 10),
+      pageNumber,
+      limitNumber,
+    );
+  }
+
   @Patch(':id')
   @ApiOperation({ summary: 'Update a template by ID' })
   @ApiConsumes('multipart/form-data')
