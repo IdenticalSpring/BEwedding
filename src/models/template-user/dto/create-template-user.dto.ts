@@ -35,6 +35,20 @@ export class CreateTemplateUserDto {
   description: string;
 
   @ApiProperty({
+    description: 'Tên cô dâu',
+  })
+  @IsNotEmpty()
+  @IsString()
+  brideName: string;
+
+  @ApiProperty({
+    description: 'Tên chú rể',
+  })
+  @IsNotEmpty()
+  @IsString()
+  groomName: string;
+
+  @ApiProperty({
     description: 'Id người dùng',
   })
   @IsOptional()

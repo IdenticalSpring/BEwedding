@@ -4,7 +4,7 @@ import { GlobalAuthGuard } from './auth/guards/global-auth.guard';
 import { CloudinaryModule } from './models/cloudinary/cloudinary.module';
 import { User } from './models/user/entity/user.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Module } from '@nestjs/common';
+import { flatten, Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { APP_GUARD } from '@nestjs/core';
 import { Template } from './models/template/entity/template.entity';

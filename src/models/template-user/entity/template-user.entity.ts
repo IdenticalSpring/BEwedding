@@ -1,3 +1,5 @@
+import { GallerySection } from 'src/models/gallery-section/entity/gallery-section.entity';
+import { GuestList } from 'src/models/guest/entity/guest.entity';
 import { SectionUser } from 'src/models/section-user/entity/section-user.entity';
 import { Section } from 'src/models/section/entity/section.entity';
 import { Theme } from 'src/models/theme/entity/theme.entity';
@@ -38,6 +40,11 @@ export class templateUser {
   })
   accessType: 'FREE' | 'VIP';
 
+  @Column({ type: 'text' })
+  brideName: string;
+  @Column({ type: 'text' })
+  groomName: string;
+
   @Column()
   userId: number;
 
@@ -61,4 +68,7 @@ export class templateUser {
     cascade: true,
   })
   section_user: SectionUser[];
+
+  @OneToMany(() => GuestList, (guestLists) => guestLists.templateUser)
+  guestLists: GallerySection[];
 }

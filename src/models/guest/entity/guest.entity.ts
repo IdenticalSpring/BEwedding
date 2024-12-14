@@ -1,3 +1,4 @@
+import { templateUser } from 'src/models/template-user/entity/template-user.entity';
 import { WeddingDetail } from 'src/models/wedding-details/entity/wedding-details.entity';
 import {
   Entity,
@@ -23,9 +24,9 @@ export class GuestList {
   @Column()
   weddingId: string;
 
-  @ManyToOne(() => WeddingDetail, (wedding) => wedding.guestLists)
+  @ManyToOne(() => templateUser, (templateUser) => templateUser.guestLists)
   @JoinColumn({ name: 'weddingId' })
-  weddingDetail: WeddingDetail;
+  templateUser: templateUser;
 
   @Column()
   name: string;
@@ -48,9 +49,6 @@ export class GuestList {
 
   @Column({ type: 'text', nullable: true })
   note: string;
-
-  @Column({ nullable: true })
-  tableNumber: number;
 
   @CreateDateColumn()
   createdAt: Date;

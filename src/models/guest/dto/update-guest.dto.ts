@@ -58,13 +58,4 @@ export class UpdateGuestListDto {
   @IsOptional()
   @IsString()
   note?: string;
-
-  @ApiProperty({
-    description: 'Số bàn được chỉ định',
-    type: Number,
-    required: false,
-  })
-  @IsOptional()
-  @IsNumber()
-  tableNumber?: number;
 }

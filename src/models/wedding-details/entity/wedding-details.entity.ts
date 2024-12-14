@@ -72,9 +72,6 @@ export class WeddingDetail {
   )
   guestbookSections: GallerySection[];
 
-  @OneToMany(() => GuestList, (guestLists) => guestLists.weddingDetail)
-  guestLists: GallerySection[];
-
   @ManyToOne(() => Template, (template) => template.weddingDetails)
   template: Template;
 }

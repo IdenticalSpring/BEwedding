@@ -52,6 +52,8 @@ export class TemplateController {
         accessType: { type: 'string' },
         metaData: { type: 'string' },
         userId: { type: 'number' },
+        brideName: { type: 'string' },
+        groomName: { type: 'string' },
       },
     },
   })
