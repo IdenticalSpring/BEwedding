@@ -1,3 +1,5 @@
+
+import { SubscriptionPlan } from 'src/models/subscription_plan/entity/subscription-plan.entity';
 import { templateUser } from 'src/models/template-user/entity/template-user.entity';
 import {
   Entity,
@@ -5,6 +7,7 @@ import {
   PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
+  ManyToOne,
   OneToMany,
 } from 'typeorm';
 
@@ -13,11 +16,7 @@ export enum UserRole {
   ADMIN = 'admin',
   MODERATOR = 'moderator',
 }
-export enum SubscriptionPlan {
-  FREE = 'free',
-  BASIC = 'basic',
-  PREMIUM = 'premium',
-}
+
 
 @Entity()
 export class User {
@@ -66,10 +65,9 @@ export class User {
   })
   role: UserRole;
 
-  @Column({
-    type: 'enum',
-    enum: SubscriptionPlan,
-    default: SubscriptionPlan.FREE,
+  @ManyToOne(() => SubscriptionPlan, (subscriptionPlan) => subscriptionPlan.users, {
+    nullable: true,
+    onDelete: 'SET NULL',
   })
   subscriptionPlan: SubscriptionPlan;
 
