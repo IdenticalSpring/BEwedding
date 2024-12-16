@@ -57,7 +57,7 @@ export class templateUser {
   @OneToMany(() => Theme, (theme) => theme.template)
   theme: Theme[];
 
-  @OneToMany(() => WeddingDetail, (weddingDetail) => weddingDetail.template)
+  @OneToMany(() => WeddingDetail, (weddingDetail) => weddingDetail.templateUser)
   weddingDetails: WeddingDetail[];
 
   @ManyToOne(() => User, (user) => user.template_user, { onDelete: 'CASCADE' })
@@ -68,7 +68,4 @@ export class templateUser {
     cascade: true,
   })
   section_user: SectionUser[];
-
-  @OneToMany(() => GuestList, (guestLists) => guestLists.templateUser)
-  guestLists: GallerySection[];
 }

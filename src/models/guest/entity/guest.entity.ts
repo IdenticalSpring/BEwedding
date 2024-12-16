@@ -24,9 +24,12 @@ export class GuestList {
   @Column()
   weddingId: string;
 
-  @ManyToOne(() => templateUser, (templateUser) => templateUser.guestLists)
+  @ManyToOne(
+    () => WeddingDetail,
+    (wedding_details) => wedding_details.guestLists,
+  )
   @JoinColumn({ name: 'weddingId' })
-  templateUser: templateUser;
+  weddingDetail: WeddingDetail;
 
   @Column()
   name: string;

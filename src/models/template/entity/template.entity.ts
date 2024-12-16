@@ -45,10 +45,6 @@ export class Template {
   @OneToMany(() => Theme, (theme) => theme.template)
   theme: Theme[];
 
-  @OneToMany(() => WeddingDetail, (weddingDetail) => weddingDetail.template)
-  weddingDetails: WeddingDetail[];
-
-
   @OneToMany(() => Section, (section) => section.template, { cascade: true })
   sections: Section[];
 }

@@ -11,7 +11,13 @@ import {
   HttpStatus,
 } from '@nestjs/common';
 
-import { ApiBearerAuth, ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiQuery,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { GuestListService } from './guest.service';
 import { CreateGuestListDto } from './dto/create-guest.dto';
 import { UpdateGuestListDto } from './dto/update-guest.dto';
@@ -22,7 +28,6 @@ import { Public } from 'src/auth/decorators/public.decorator';
 @ApiBearerAuth('JWT')
 export class GuestListController {
   constructor(private readonly guestListService: GuestListService) {}
-  @Public()
   @Post()
   @ApiOperation({ summary: 'Create a new guest list entry' })
   @ApiResponse({
@@ -51,7 +56,10 @@ export class GuestListController {
     description: 'Items per page',
     example: 10,
   })
-  @ApiResponse({ status: 200, description: 'Return a list of guest list entries' })
+  @ApiResponse({
+    status: 200,
+    description: 'Return a list of guest list entries',
+  })
   async findAll(
     @Query('weddingId') weddingId: string,
     @Query('page') page = 1,
@@ -89,7 +97,10 @@ export class GuestListController {
     @Param('id') id: string,
     @Body() updateGuestListDto: UpdateGuestListDto,
   ) {
-    const updatedGuest = await this.guestListService.update(id, updateGuestListDto);
+    const updatedGuest = await this.guestListService.update(
+      id,
+      updateGuestListDto,
+    );
     if (!updatedGuest) {
       throw new HttpException('Not Found', HttpStatus.NOT_FOUND);
     }

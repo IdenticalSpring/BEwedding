@@ -5,6 +5,7 @@ import { GallerySection } from 'src/models/gallery-section/entity/gallery-sectio
 import { GuestList } from 'src/models/guest/entity/guest.entity';
 import { GuestbookSection } from 'src/models/guestbook-section/entity/guestbook-section.entity';
 import { HeaderSection } from 'src/models/header-section/entity/header-section.entity';
+import { templateUser } from 'src/models/template-user/entity/template-user.entity';
 import { Template } from 'src/models/template/entity/template.entity';
 import {
   Entity,
@@ -72,6 +73,9 @@ export class WeddingDetail {
   )
   guestbookSections: GallerySection[];
 
-  @ManyToOne(() => Template, (template) => template.weddingDetails)
-  template: Template;
+  @ManyToOne(() => templateUser, (template) => template.weddingDetails)
+  templateUser: templateUser;
+
+  @OneToMany(() => GuestList, (guestLists) => guestLists.weddingDetail)
+  guestLists: GuestList[];
 }

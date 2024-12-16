@@ -20,9 +20,9 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { WeddingDetailService } from 'src/models/wedding-details/wedding-details.service';
-import { WeddingDetail } from 'src/models/wedding-details/entity/wedding-details.entity'; 
-import { CreateWeddingDetailDto } from 'src/models/wedding-details/dto/create-wedding-details.dto'; 
-import { UpdateWeddingDetailDto } from 'src/models/wedding-details/dto/update-wedding-details.dto'; 
+import { WeddingDetail } from 'src/models/wedding-details/entity/wedding-details.entity';
+import { CreateWeddingDetailDto } from 'src/models/wedding-details/dto/create-wedding-details.dto';
+import { UpdateWeddingDetailDto } from 'src/models/wedding-details/dto/update-wedding-details.dto';
 import { Public } from 'src/auth/decorators/public.decorator';
 import { Roles } from 'src/auth/decorators/roles.decorator';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
@@ -49,7 +49,6 @@ export class AdminWeddingDetailController {
   }
 
   @Get()
-  @Public()
   @ApiOperation({ summary: 'Lấy danh sách tất cả thông tin đám cưới' })
   @ApiResponse({
     status: 200,

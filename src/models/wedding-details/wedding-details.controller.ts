@@ -43,7 +43,6 @@ export class WeddingDetailController {
   }
 
   @Get()
-  @Public()
   @ApiOperation({ summary: 'Lấy danh sách tất cả thông tin đám cưới' })
   @ApiResponse({
     status: 200,

@@ -23,7 +23,7 @@ export class GuestListService {
       where: { weddingId },
       skip: (page - 1) * limit, // Tính toán offset
       take: limit, // Lấy số lượng khách mời theo limit
-      relations: ['templateUser'], // Fetch related weddingDetail
+      relations: ['weddingDetail'], // Fetch related weddingDetail
     });
 
     return {
