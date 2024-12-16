@@ -23,7 +23,7 @@ export class SubscriptionPlan {
 
     @Column({ type: 'decimal', precision: 10, scale: 2, default: 0.0 })
     price: number;
-    @Column({ type: 'int', default: 1 }) 
+    @Column({ type: 'int', default: 1,nullable: true }) 
     duration: number;
     @CreateDateColumn()
     createdAt: Date;

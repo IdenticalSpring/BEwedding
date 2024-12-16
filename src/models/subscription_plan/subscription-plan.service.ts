@@ -66,4 +66,20 @@ export class SubscriptionPlanService {
             throw error;
         }
     }
+    async findAllPaginated(page: number, limit: number): Promise<{ data: SubscriptionPlan[]; total: number; currentPage: number }> {
+        try {
+            const skip = (page - 1) * limit;
+
+            const [data, total] = await this.subscriptionPlanRepository.findAndCount({
+                skip,
+                take: limit,
+                order: { createdAt: 'DESC' },
+            });
+
+            return { data, total, currentPage: page };
+        } catch (error) {
+            this.logger.error('Error fetching all subscription plans with pagination', error.stack);
+            throw error;
+        }
+    }
 }

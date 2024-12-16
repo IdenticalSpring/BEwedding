@@ -165,16 +165,27 @@ export class SubscriptionService {
 
 
 
-    // Hủy Subscription
-    async cancelSubscription(subscriptionId: number, reason: string): Promise<void> {
-        const subscription = await this.subscriptionRepository.findOne({ where: { id: subscriptionId } });
-        if (!subscription) throw new NotFoundException(`Subscription with ID ${subscriptionId} not found`);
+    async getSubscriptions(page: number, limit: number): Promise<{ data: Subscription[]; total: number }> {
+        const [data, total] = await this.subscriptionRepository.findAndCount({
+            skip: (page - 1) * limit,
+            take: limit,
+            relations: ['user', 'subscriptionPlan'], 
+            order: { createdAt: 'DESC' }, 
+        });
 
-        if (subscription.paymentLinkId) {
-            await this.payOSService.cancelPaymentLink(subscription.paymentLinkId, reason);
+        return { data, total };
+    }
+    async deleteSubscription(id: number): Promise<{ message: string }> {
+        const subscription = await this.subscriptionRepository.findOne({ where: { id } });
+
+        if (!subscription) {
+            throw new NotFoundException(`Subscription with ID ${id} not found`);
         }
 
-        subscription.status = SubscriptionStatus.FAILED;
-        await this.subscriptionRepository.save(subscription);
+        // Delete the subscription
+        await this.subscriptionRepository.delete(id);
+
+        return { message: `Subscription with ID ${id} has been deleted successfully.` };
     }
+
 }

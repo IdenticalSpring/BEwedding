@@ -47,6 +47,9 @@ import { SubscriptionPlan } from './models/subscription_plan/entity/subscription
 import { Subscription } from './models/subscription/entity/subscription.entity';
 import { SubscriptionModule } from './models/subscription/subscription.module';
 import { PayOSModule } from './models/subscription/payos.module';
+import { AdminSubscriptionModule } from './admin/supcription/subscription.module';
+import { AdminSubscriptionPlanModule } from './admin/supcription_plan/subscription-plan.module';
+
 
 @Module({
   imports: [
@@ -117,6 +120,8 @@ import { PayOSModule } from './models/subscription/payos.module';
     AdminUserModule,
     AdminWeddingDetailModule,
     AdminThemeModule,
+    AdminSubscriptionModule,
+    AdminSubscriptionPlanModule,
   ],
   providers: [
     {

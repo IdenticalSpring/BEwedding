@@ -38,14 +38,4 @@ export class SubscriptionController {
 
         await this.subscriptionService.updateSubscriptionStatus(orderCode, success, startDate, endDate);
     }
-    @Delete(':id')
-    @ApiOperation({ summary: 'Cancel a subscription' })
-    @ApiResponse({ status: 200, description: 'Subscription canceled successfully' })
-    async cancelSubscription(
-        @Param('id') subscriptionId: number,
-        @Query('reason') reason: string
-    ): Promise<{ message: string }> {
-        await this.subscriptionService.cancelSubscription(subscriptionId, reason || 'No reason provided');
-        return { message: `Subscription with ID ${subscriptionId} has been canceled.` };
-    }
 }
