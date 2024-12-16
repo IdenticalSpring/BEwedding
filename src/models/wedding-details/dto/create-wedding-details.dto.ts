@@ -38,5 +38,10 @@ export class CreateWeddingDetailDto {
 
   @ApiProperty()
   @IsString()
-  metaData: string;
+  metaData?: string;
+
+  @ApiProperty({ description: 'Template ID liên kết', required: false })
+  @IsOptional()
+  @IsString()
+  template_userId?: string;
 }

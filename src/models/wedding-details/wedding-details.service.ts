@@ -18,8 +18,19 @@ export class WeddingDetailService {
     return this.weddingDetailRepository.save(weddingDetail);
   }
 
-  findAll() {
-    return this.weddingDetailRepository.find();
+  async findAll(): Promise<WeddingDetail[]> {
+    return this.weddingDetailRepository.find({
+      relations: ['templateUser'], // Gắn quan hệ để truy xuất templateUser nếu cần
+    });
+  }
+
+  async findAllByUserId(userId: number): Promise<WeddingDetail[]> {
+    return this.weddingDetailRepository.find({
+      relations: ['templateUser'], // Gắn quan hệ để truy xuất thông tin userId
+      where: {
+        templateUser: { userId }, // Điều kiện tìm kiếm dựa trên userId
+      },
+    });
   }
 
   async findOne(id: string) {
@@ -49,8 +60,7 @@ export class WeddingDetailService {
   }
   async findById(id: string): Promise<WeddingDetail | null> {
     return this.weddingDetailRepository.findOne({
-      where: { id }, 
+      where: { id },
     });
   }
-
 }
