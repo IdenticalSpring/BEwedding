@@ -10,6 +10,7 @@ import {
   HttpCode,
   HttpStatus,
   NotFoundException,
+  Query,
 } from '@nestjs/common';
 
 import {
@@ -43,13 +44,18 @@ export class WeddingDetailController {
   }
 
   @Get()
-  @ApiOperation({ summary: 'Lấy danh sách tất cả thông tin đám cưới' })
+  @ApiOperation({
+    summary: 'Lấy danh sách tất cả thông tin đám cưới hoặc theo User ID',
+  })
   @ApiResponse({
     status: 200,
     description: 'Danh sách thông tin đám cưới',
     type: [WeddingDetail],
   })
-  findAll() {
+  async findAll(@Query('userId') userId?: number) {
+    if (userId) {
+      return this.weddingDetailService.findAllByUserId(userId);
+    }
     return this.weddingDetailService.findAll();
   }
 

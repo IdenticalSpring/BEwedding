@@ -15,6 +15,7 @@ import {
   UpdateDateColumn,
   OneToMany,
   ManyToOne,
+  JoinColumn,
 } from 'typeorm';
 
 @Entity('wedding_details')
@@ -46,6 +47,9 @@ export class WeddingDetail {
   @CreateDateColumn()
   createdAt: Date;
 
+  @Column({ type: 'uuid', nullable: true })
+  template_userId: string;
+
   @UpdateDateColumn()
   updatedAt: Date;
 
@@ -73,7 +77,10 @@ export class WeddingDetail {
   )
   guestbookSections: GallerySection[];
 
-  @ManyToOne(() => templateUser, (template) => template.weddingDetails)
+  @ManyToOne(() => templateUser, (template) => template.weddingDetails, {
+    onDelete: 'CASCADE',
+  })
+  @JoinColumn({ name: 'template_userId' })
   templateUser: templateUser;
 
   @OneToMany(() => GuestList, (guestLists) => guestLists.weddingDetail)
