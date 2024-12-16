@@ -44,6 +44,9 @@ import { TemplateUserModule } from './models/template-user/template-user.module'
 import { SectionUserModule } from './models/section-user/section-user.module';
 import { SubscriptionPlanModule } from './models/subscription_plan/subscription-plan.module';
 import { SubscriptionPlan } from './models/subscription_plan/entity/subscription-plan.entity';
+import { Subscription } from './models/subscription/entity/subscription.entity';
+import { SubscriptionModule } from './models/subscription/subscription.module';
+import { PayOSModule } from './models/subscription/payos.module';
 
 @Module({
   imports: [
@@ -72,6 +75,7 @@ import { SubscriptionPlan } from './models/subscription_plan/entity/subscription
         SectionUser,
         templateUser,
         SubscriptionPlan,
+        Subscription,
       ],
       synchronize: false,
     }),
@@ -97,6 +101,8 @@ import { SubscriptionPlan } from './models/subscription_plan/entity/subscription
     TemplateUserModule,
     SectionUserModule,
     SubscriptionPlanModule,
+    SubscriptionModule,
+    PayOSModule,
     // Cloudinary
     CloudinaryModule,
 

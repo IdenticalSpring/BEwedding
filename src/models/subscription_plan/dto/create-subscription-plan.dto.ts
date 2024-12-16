@@ -16,4 +16,8 @@ export class CreateSubscriptionPlanDto {
     @IsNumber()
     @Min(0)
     price: number;
+    @ApiProperty({ example: 12, description: 'Duration of the subscription plan in months' })
+    @IsNumber()
+    @Min(1) 
+    duration: number;
 }

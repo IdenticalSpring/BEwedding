@@ -1,4 +1,5 @@
 
+import { Subscription } from 'src/models/subscription/entity/subscription.entity';
 import { User } from 'src/models/user/entity/user.entity';
 import {
     Entity,
@@ -22,13 +23,14 @@ export class SubscriptionPlan {
 
     @Column({ type: 'decimal', precision: 10, scale: 2, default: 0.0 })
     price: number;
-
+    @Column({ type: 'int', default: 1 }) 
+    duration: number;
     @CreateDateColumn()
     createdAt: Date;
 
     @UpdateDateColumn()
     updatedAt: Date;
 
-    @OneToMany(() => User, (user) => user.subscriptionPlan)
-    users: User[];
+    @OneToMany(() => Subscription, (subscription) => subscription.subscriptionPlan)
+    subscriptions: Subscription[];
 }

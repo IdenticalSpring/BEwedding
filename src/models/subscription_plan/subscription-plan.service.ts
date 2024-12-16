@@ -1,42 +1,69 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { SubscriptionPlan } from './entity/subscription-plan.entity'; 
+import { SubscriptionPlan } from './entity/subscription-plan.entity';
 
 @Injectable()
 export class SubscriptionPlanService {
+    private readonly logger = new Logger(SubscriptionPlanService.name);
+
     constructor(
         @InjectRepository(SubscriptionPlan)
         private readonly subscriptionPlanRepository: Repository<SubscriptionPlan>,
     ) { }
 
     async findAll(): Promise<SubscriptionPlan[]> {
-        return await this.subscriptionPlanRepository.find();
+        try {
+            return await this.subscriptionPlanRepository.find();
+        } catch (error) {
+            this.logger.error('Error fetching all subscription plans', error.stack);
+            throw error;
+        }
     }
 
     async findById(id: number): Promise<SubscriptionPlan> {
-        const plan = await this.subscriptionPlanRepository.findOneBy({ id });
-        if (!plan) {
-            throw new NotFoundException(`Subscription Plan with ID ${id} not found`);
+        try {
+            const plan = await this.subscriptionPlanRepository.findOneBy({ id });
+            if (!plan) {
+                throw new NotFoundException(`Subscription Plan with ID ${id} not found`);
+            }
+            return plan;
+        } catch (error) {
+            this.logger.error(`Error fetching subscription plan with ID ${id}`, error.stack);
+            throw error;
         }
-        return plan;
     }
 
     async create(data: Partial<SubscriptionPlan>): Promise<SubscriptionPlan> {
-        const newPlan = this.subscriptionPlanRepository.create(data);
-        return await this.subscriptionPlanRepository.save(newPlan);
+        try {
+            const newPlan = this.subscriptionPlanRepository.create(data);
+            return await this.subscriptionPlanRepository.save(newPlan);
+        } catch (error) {
+            this.logger.error('Error creating a new subscription plan', error.stack);
+            throw error;
+        }
     }
 
     async update(id: number, data: Partial<SubscriptionPlan>): Promise<SubscriptionPlan> {
-        await this.findById(id); // Check if exists
-        await this.subscriptionPlanRepository.update(id, data);
-        return this.findById(id);
+        try {
+            await this.findById(id); // Check if exists
+            await this.subscriptionPlanRepository.update(id, data);
+            return await this.findById(id);
+        } catch (error) {
+            this.logger.error(`Error updating subscription plan with ID ${id}`, error.stack);
+            throw error;
+        }
     }
 
     async delete(id: number): Promise<void> {
-        const result = await this.subscriptionPlanRepository.delete(id);
-        if (result.affected === 0) {
-            throw new NotFoundException(`Subscription Plan with ID ${id} not found`);
+        try {
+            const result = await this.subscriptionPlanRepository.delete(id);
+            if (result.affected === 0) {
+                throw new NotFoundException(`Subscription Plan with ID ${id} not found`);
+            }
+        } catch (error) {
+            this.logger.error(`Error deleting subscription plan with ID ${id}`, error.stack);
+            throw error;
         }
     }
 }

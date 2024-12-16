@@ -1,4 +1,5 @@
 
+import { Subscription } from 'src/models/subscription/entity/subscription.entity';
 import { SubscriptionPlan } from 'src/models/subscription_plan/entity/subscription-plan.entity';
 import { templateUser } from 'src/models/template-user/entity/template-user.entity';
 import {
@@ -65,11 +66,6 @@ export class User {
   })
   role: UserRole;
 
-  @ManyToOne(() => SubscriptionPlan, (subscriptionPlan) => subscriptionPlan.users, {
-    nullable: true,
-    onDelete: 'SET NULL',
-  })
-  subscriptionPlan: SubscriptionPlan;
 
   @CreateDateColumn()
   createdAt: Date;
@@ -78,4 +74,6 @@ export class User {
   updatedAt: Date;
   @OneToMany(() => templateUser, (template_user) => template_user.user)
   template_user: templateUser[];
+  @OneToMany(() => Subscription, (subscription) => subscription.user)
+  subscriptions: Subscription[];
 }
