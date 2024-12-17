@@ -10,7 +10,7 @@ import {
 @Entity('sections')
 export class Section {
   @PrimaryGeneratedColumn('uuid')
-  id: number;
+  id: string;
 
   @Column({ type: 'varchar', length: 255 })
   name: string;

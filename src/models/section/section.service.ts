@@ -10,7 +10,7 @@ export class SectionService {
   constructor(
     @InjectRepository(Section)
     private readonly sectionRepository: Repository<Section>,
-  ) { }
+  ) {}
 
   async create(createSectionDto: CreateSectionDto): Promise<Section> {
     const section = this.sectionRepository.create(createSectionDto);
@@ -20,8 +20,11 @@ export class SectionService {
   async findAll(): Promise<Section[]> {
     return this.sectionRepository.find();
   }
+  async findByTemplateId(templateId: string): Promise<Section[]> {
+    return this.sectionRepository.find({ where: { templateId } });
+  }
 
-  async findOne(id: number): Promise<Section> {
+  async findOne(id: string): Promise<Section> {
     const section = await this.sectionRepository.findOne({ where: { id } });
     if (!section) {
       throw new NotFoundException(`Section with ID ${id} not found`);
@@ -30,16 +33,16 @@ export class SectionService {
   }
 
   async update(
-    id: number,
+    id: string,
     updateSectionDto: UpdateSectionDto,
   ): Promise<Section> {
-    const section = await this.findOne(id); 
+    const section = await this.findOne(id);
     Object.assign(section, updateSectionDto);
     return this.sectionRepository.save(section);
   }
 
-  async remove(id: number): Promise<void> {
-    const section = await this.findOne(id); 
+  async remove(id: string): Promise<void> {
+    const section = await this.findOne(id);
     await this.sectionRepository.remove(section);
   }
 }

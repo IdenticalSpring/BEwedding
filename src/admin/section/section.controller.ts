@@ -28,7 +28,7 @@ import { RolesGuard } from 'src/auth/guards/role-auth.guard';
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Roles('admin')
 export class AdminSectionController {
-  constructor(private readonly sectionService: SectionService) { }
+  constructor(private readonly sectionService: SectionService) {}
 
   @Post()
   @ApiOperation({ summary: 'Create a new section' })
@@ -55,8 +55,21 @@ export class AdminSectionController {
   @Get(':id')
   @ApiOperation({ summary: 'Get section details by ID' })
   @ApiResponse({ status: 200, description: 'Section details.', type: Section })
-  async findOne(@Param('id') id: number): Promise<Section> {
+  async findOne(@Param('id') id: string): Promise<Section> {
     return this.sectionService.findOne(id);
+  }
+
+  @Get('template/:templateId')
+  @ApiOperation({ summary: 'Get sections by template ID' })
+  @ApiResponse({
+    status: 200,
+    description: 'List of sections linked to the specified template ID.',
+    type: [Section],
+  })
+  async findByTemplateId(
+    @Param('templateId') templateId: string,
+  ): Promise<Section[]> {
+    return this.sectionService.findByTemplateId(templateId);
   }
 
   @Patch(':id')
@@ -67,7 +80,7 @@ export class AdminSectionController {
     type: Section,
   })
   async update(
-    @Param('id') id: number,
+    @Param('id') id: string,
     @Body() updateSectionDto: UpdateSectionDto,
   ): Promise<Section> {
     return this.sectionService.update(id, updateSectionDto);
@@ -76,7 +89,7 @@ export class AdminSectionController {
   @Delete(':id')
   @ApiOperation({ summary: 'Delete section by ID' })
   @ApiResponse({ status: 200, description: 'The section has been deleted.' })
-  async remove(@Param('id') id: number): Promise<void> {
+  async remove(@Param('id') id: string): Promise<void> {
     return this.sectionService.remove(id);
   }
 }
