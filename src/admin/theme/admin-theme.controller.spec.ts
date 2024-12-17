@@ -54,8 +54,6 @@ describe('AdminThemeController', () => {
                 createdAt: new Date(),
                 updatedAt: new Date(),
                 theme: [],
-                weddingDetails: [],
-                user: {} as User,
                 sections: [],
             };
 
@@ -130,8 +128,6 @@ describe('AdminThemeController', () => {
                 createdAt: new Date(),
                 updatedAt: new Date(),
                 theme: [],
-                weddingDetails: [],
-                user: {} as User,
                 sections: [],
             };
 

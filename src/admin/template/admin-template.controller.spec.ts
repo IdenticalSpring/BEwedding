@@ -73,7 +73,6 @@ describe('AdminTemplateController', () => {
         createdAt: new Date(),
         updatedAt: new Date(),
         theme: [],
-        weddingDetails: [],
         sections: [],
       };
 
@@ -124,7 +123,6 @@ describe('AdminTemplateController', () => {
         createdAt: new Date(),
         updatedAt: new Date(),
         theme: [],
-        weddingDetails: [],
         sections: [],
       };
 
@@ -190,7 +188,6 @@ describe('AdminTemplateController', () => {
         createdAt: new Date(),
         updatedAt: new Date(),
         theme: [],
-        weddingDetails: [],
         sections: [],
       };
 

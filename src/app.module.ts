@@ -42,6 +42,14 @@ import { SectionUser } from './models/section-user/entity/section-user.entity';
 import { templateUser } from './models/template-user/entity/template-user.entity';
 import { TemplateUserModule } from './models/template-user/template-user.module';
 import { SectionUserModule } from './models/section-user/section-user.module';
+import { SubscriptionPlanModule } from './models/subscription_plan/subscription-plan.module';
+import { SubscriptionPlan } from './models/subscription_plan/entity/subscription-plan.entity';
+import { Subscription } from './models/subscription/entity/subscription.entity';
+import { SubscriptionModule } from './models/subscription/subscription.module';
+import { PayOSModule } from './models/subscription/payos.module';
+import { AdminSubscriptionModule } from './admin/supcription/subscription.module';
+import { AdminSubscriptionPlanModule } from './admin/supcription_plan/subscription-plan.module';
+
 
 @Module({
   imports: [
@@ -69,6 +77,8 @@ import { SectionUserModule } from './models/section-user/section-user.module';
         Section,
         SectionUser,
         templateUser,
+        SubscriptionPlan,
+        Subscription,
       ],
       synchronize: false,
     }),
@@ -93,6 +103,9 @@ import { SectionUserModule } from './models/section-user/section-user.module';
     SectionModule,
     TemplateUserModule,
     SectionUserModule,
+    SubscriptionPlanModule,
+    SubscriptionModule,
+    PayOSModule,
     // Cloudinary
     CloudinaryModule,
 
@@ -107,6 +120,8 @@ import { SectionUserModule } from './models/section-user/section-user.module';
     AdminUserModule,
     AdminWeddingDetailModule,
     AdminThemeModule,
+    AdminSubscriptionModule,
+    AdminSubscriptionPlanModule,
   ],
   providers: [
     {
