@@ -23,7 +23,7 @@ import { Public } from 'src/auth/decorators/public.decorator';
 @Controller('sections')
 @ApiBearerAuth('JWT')
 export class SectionController {
-  constructor(private readonly sectionService: SectionService) { }
+  constructor(private readonly sectionService: SectionService) {}
 
   @Post()
   @Public()
@@ -52,8 +52,12 @@ export class SectionController {
   @Get(':id')
   @Public()
   @ApiOperation({ summary: 'Get a section by ID' })
-  @ApiResponse({ status: 200, description: 'Details of the section.', type: Section })
-  async findOne(@Param('id') id: number): Promise<Section> {
+  @ApiResponse({
+    status: 200,
+    description: 'Details of the section.',
+    type: Section,
+  })
+  async findOne(@Param('id') id: string): Promise<Section> {
     return this.sectionService.findOne(id);
   }
 
@@ -66,7 +70,7 @@ export class SectionController {
     type: Section,
   })
   async update(
-    @Param('id') id: number,
+    @Param('id') id: string,
     @Body() updateSectionDto: UpdateSectionDto,
   ): Promise<Section> {
     return this.sectionService.update(id, updateSectionDto);
@@ -75,8 +79,11 @@ export class SectionController {
   @Delete(':id')
   @Public()
   @ApiOperation({ summary: 'Delete a section by ID' })
-  @ApiResponse({ status: 200, description: 'The section was deleted successfully.' })
-  async remove(@Param('id') id: number): Promise<void> {
+  @ApiResponse({
+    status: 200,
+    description: 'The section was deleted successfully.',
+  })
+  async remove(@Param('id') id: string): Promise<void> {
     return this.sectionService.remove(id);
   }
 }
