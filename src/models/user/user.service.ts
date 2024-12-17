@@ -76,11 +76,12 @@ export class UserService {
     }
   }
 
-  async findOne(condition: Partial<User>): Promise<User | null> {
-    return this.userRepository.findOne({
-      // where: condition,
-      // // relations: ['orders'],
-    });
+  async findOne(id: number): Promise<UserResponseDto> {
+    const user = await this.userRepository.findOne({ where: { id } });
+    if (!user) {
+      throw new NotFoundException('Không tìm thấy người dùng');
+    }
+    return this.mapToUserResponseDto(user);
   }
 
 
@@ -173,7 +174,7 @@ export class UserService {
   }
 
   async remove(id: number): Promise<void> {
-    const user = await this.findOne({ id });
+    const user = await this.findOne(id);
     if (!user) {
       throw new NotFoundException('User not found');
     }
@@ -186,23 +187,28 @@ export class UserService {
     await this.userRepository.delete(id);
   }
 
-  async promoteToAdmin(userId: number): Promise<void> {
-    const user = await this.findOne({ id: userId });
+  async promoteToAdmin(id: number): Promise<UserResponseDto> {
+    const user = await this.userRepository.findOne({ where: { id } });
     if (!user) {
-      throw new NotFoundException('User not found');
+      throw new NotFoundException('Không tìm thấy người dùng');
     }
+
     user.role = UserRole.ADMIN;
     await this.userRepository.save(user);
+    return this.mapToUserResponseDto(user);
   }
 
-  async demoteToUser(userId: number): Promise<void> {
-    const user = await this.findOne({ id: userId });
+  async demoteToUser(id: number): Promise<UserResponseDto> {
+    const user = await this.userRepository.findOne({ where: { id } });
     if (!user) {
-      throw new NotFoundException('User not found');
+      throw new NotFoundException('Không tìm thấy người dùng');
     }
+
     user.role = UserRole.USER;
     await this.userRepository.save(user);
+    return this.mapToUserResponseDto(user);
   }
+
 
   async searchUsers(
     name: string,

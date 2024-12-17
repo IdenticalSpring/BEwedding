@@ -9,6 +9,9 @@ import {
   UseInterceptors,
   UploadedFile,
   Query,
+  NotFoundException,
+  ParseIntPipe,
+  BadRequestException,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -41,10 +44,10 @@ export class UserController {
     type: UserResponseDto,
   })
   @ApiResponse({ status: 404, description: 'User not found' })
-  async findOne(@Param('id') id: number): Promise<UserResponseDto> {
-    const user = await this.userService.findOne({ id });
+  async findOne(@Param('id', ParseIntPipe) id: number) {
+    const user = await this.userService.findOne(id);
     if (!user) {
-      throw new Error('User not found');
+      throw new NotFoundException('User not found');
     }
     return user;
   }
@@ -61,37 +64,18 @@ export class UserController {
   @ApiResponse({ status: 404, description: 'User not found' })
   @UseInterceptors(FileInterceptor('avatar'))
   async update(
-    @Param('id') id: number,
+    @Param('id', ParseIntPipe) id: number,
     @Body() updateUserDto: UpdateUserDto,
     @UploadedFile() avatarFile: Express.Multer.File,
   ): Promise<UserResponseDto> {
     // Kiểm tra xem file có tồn tại không
     if (avatarFile && !avatarFile.mimetype.startsWith('image/')) {
-      throw new Error('Invalid file type for avatar');
+      throw new NotFoundException('Invalid file type for avatar');
     }
 
     console.log('Avatar file:', avatarFile); // In thông tin file ra log
 
     const user = await this.userService.update(id, updateUserDto, avatarFile);
     return user;
-  }
-
-  @Get()
-  @Public()
-  @ApiOperation({ summary: 'Get all users with pagination' })
-  @ApiQuery({
-    name: 'page',
-    required: false,
-    type: Number,
-    description: 'Page number',
-  })
-  @ApiResponse({
-    status: 200,
-    description: 'List of users',
-    type: [UserResponseDto],
-  })
-  async findAll(@Query('page') page: number = 1): Promise<any> {
-    const users = await this.userService.getAllUsers(page);
-    return users;
   }
 }

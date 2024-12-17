@@ -53,7 +53,7 @@ describe('AdminUserController', () => {
     it('should get user by ID', async () => {
         const result = await controller.findOne(1);
         expect(result).toEqual(mockUserResponse);
-        expect(userService.findOne).toHaveBeenCalledWith({ id: 1 });
+        expect(userService.findOne).toHaveBeenCalledWith(1);
     });
 
     it('should throw error if user not found', async () => {

@@ -12,6 +12,7 @@ import {
   HttpStatus,
   Query,
   UseGuards,
+  NotFoundException,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -56,7 +57,13 @@ export class TemplateController {
   @ApiOperation({ summary: 'Get details of a template' })
   @ApiResponse({ status: 200, description: 'Template details' })
   @ApiResponse({ status: 404, description: 'Template not found' })
-  async findOne(@Param('id') id: string) {
-    return this.templateService.findOne(id);
+  @Get(':id')
+  async findOne(@Param('id') id: string): Promise<Template> {
+    const template = await this.templateService.findOne(id);
+    if (!template) {
+      throw new NotFoundException(`Template not found`);
+    }
+    return template;
   }
+
 }

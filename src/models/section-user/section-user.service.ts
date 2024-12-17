@@ -6,7 +6,7 @@ import { UpdateSectionUserDto } from './dto/update-section-user.dto';
 import { SectionUser } from './entity/section-user.entity';
 
 @Injectable()
-export class SectionService {
+export class SectionUserService {
   constructor(
     @InjectRepository(SectionUser)
     private readonly sectionRepository: Repository<SectionUser>,

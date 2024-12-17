@@ -13,7 +13,7 @@ import {
   ApiResponse,
   ApiBearerAuth,
 } from '@nestjs/swagger';
-import { SectionService } from './section-user.service';
+import { SectionUserService } from './section-user.service';
 import { CreateSectionUserDto } from './dto/create-section-user.dto';
 import { UpdateSectionUserDto } from './dto/update-section-user.dto';
 import { SectionUser } from './entity/section-user.entity';
@@ -23,7 +23,7 @@ import { Public } from 'src/auth/decorators/public.decorator';
 @Controller('section_user')
 @ApiBearerAuth('JWT')
 export class SectionUserController {
-  constructor(private readonly sectionService: SectionService) {}
+  constructor(private readonly sectionService: SectionUserService) {}
 
   @Post()
   @Public()

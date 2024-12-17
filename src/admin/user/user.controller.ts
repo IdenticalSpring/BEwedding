@@ -47,7 +47,7 @@ export class AdminUserController {
   })
   @ApiResponse({ status: 404, description: 'User not found' })
   async findOne(@Param('id') id: number): Promise<UserResponseDto> {
-    const user = await this.userService.findOne({ id });
+    const user = await this.userService.findOne(id );
     if (!user) {
       throw new NotFoundException('User not found');
     }

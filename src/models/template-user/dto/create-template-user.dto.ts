@@ -52,7 +52,6 @@ export class CreateTemplateUserDto {
     description: 'Id người dùng',
   })
   @IsOptional()
-  @IsString()
   userId: number;
 
   @ApiProperty({
