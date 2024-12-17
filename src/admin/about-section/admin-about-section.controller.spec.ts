@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { AdminAboutSectionController } from './about-section.controller';
 import { AboutSectionService } from 'src/models/about-section/about-section.service';
 import { WeddingDetailService } from 'src/models/wedding-details/wedding-details.service';
-import * as request from 'supertest';
+import request from 'supertest';
 import { INestApplication, NotFoundException } from '@nestjs/common';
 import { HttpStatus } from '@nestjs/common';
 import { CreateAboutSectionDto } from 'src/models/about-section/dto/create-about-section.dto';
@@ -81,7 +81,8 @@ describe('AdminAboutSectionController', () => {
             gallerySection: [],
             guestbookSections: [],
             guestLists: [],
-            template: null,
+            templateUser: null,
+            
         };
 
         const mockAboutSection: AboutSection = {
@@ -132,7 +133,7 @@ describe('AdminAboutSectionController', () => {
             gallerySection: [],
             guestbookSections: [],
             guestLists: [],
-            template: null,
+            templateUser: null,
         };
 
         const mockCreatedAboutSection: AboutSection = {

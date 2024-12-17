@@ -4,8 +4,10 @@ import { AuthService } from './auth.service';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 import { ConflictException, BadRequestException } from '@nestjs/common';
-import * as request from 'supertest';
-import { SubscriptionPlan, User, UserRole } from 'src/models/user/entity/user.entity';
+import request from 'supertest';
+import { User, UserRole } from 'src/models/user/entity/user.entity';
+import { Subscription } from 'src/models/subscription/entity/subscription.entity';
+
 
 describe('AuthController', () => {
     let app;
@@ -45,6 +47,9 @@ describe('AuthController', () => {
             password: 'password123',
         };
 
+        const mockSubscription = new Subscription();
+        mockSubscription.id = 1; // Thêm subscription vào User
+
         const mockUser: User = {
             id: 1,
             name: 'John Doe',
@@ -60,10 +65,10 @@ describe('AuthController', () => {
             avatar: null,
             dateOfBirth: null,
             role: UserRole.USER,
-            subscriptionPlan: SubscriptionPlan.FREE,
             createdAt: new Date(),
             updatedAt: new Date(),
-            templates: [],
+            subscriptions: [mockSubscription], // Liên kết với subscription
+            template_user: [],
         };
 
         jest.spyOn(authService, 'register').mockResolvedValue(mockUser);
@@ -106,18 +111,17 @@ describe('AuthController', () => {
     it('should throw error if required fields are missing during registration', async () => {
         const registerDto = {
             name: 'John Doe',
-            phone: "",  
+            phone: "",
             address: '123 Main Street',
-            email: 'johndoe@example.com',
+            email: '',
             password: 'password123',
         };
 
         await request(app.getHttpServer())
             .post('/auth/register')
             .send(registerDto)
-            .expect(400) 
+            .expect(400);
     });
-
 
     it('should throw error if password is too weak during registration', async () => {
         const registerDto: RegisterDto = {
@@ -125,7 +129,7 @@ describe('AuthController', () => {
             phone: '123456789',
             address: '123 Main Street',
             email: 'johndoe@example.com',
-            password: '1234',  
+            password: '1234',
         };
 
         await request(app.getHttpServer())
@@ -145,6 +149,9 @@ describe('AuthController', () => {
             password: 'password123',
         };
 
+        const mockSubscription = new Subscription();
+        mockSubscription.id = 1; // Liên kết với Subscription
+
         const userMock: User = {
             id: 1,
             name: 'John Doe',
@@ -160,10 +167,10 @@ describe('AuthController', () => {
             avatar: null,
             dateOfBirth: null,
             role: UserRole.USER,
-            subscriptionPlan: SubscriptionPlan.FREE,
+            subscriptions: [mockSubscription], // Liên kết với Subscription
             createdAt: new Date(),
             updatedAt: new Date(),
-            templates: [],
+            template_user: [],
         };
 
         jest.spyOn(authService, 'validateUser').mockResolvedValue(userMock);
@@ -285,5 +292,9 @@ describe('AuthController', () => {
                 message: 'Invalid or expired token',
                 error: 'Bad Request',
             });
+    });
+
+    afterAll(async () => {
+        await app.close();
     });
 });

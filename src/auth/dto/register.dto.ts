@@ -8,10 +8,12 @@ export class RegisterDto {
 
     @ApiProperty({ description: 'User phone number', example: '123456789' })
     @IsOptional()
+    @IsNotEmpty()
     phone: string;
 
     @ApiProperty({ description: 'User address', example: '123 Main Street' })
     @IsOptional()
+    @IsNotEmpty()
     address: string;
 
     @ApiProperty({ description: 'User email', example: 'johndoe@example.com' })
