@@ -101,18 +101,37 @@ export class AuthService {
   }
 
   async login(user: User) {
+    const activeSubscription = await this.userRepository
+      .createQueryBuilder('user')
+      .leftJoinAndSelect('user.subscriptions', 'subscription')
+      .leftJoinAndSelect('subscription.subscriptionPlan', 'plan')
+      .where('user.id = :userId', { userId: user.id })
+      .andWhere('subscription.status = :status', { status: 'active' })
+      .getOne();
+
+    let planId = null;
+    if (activeSubscription && activeSubscription.subscriptions.length > 0) {
+      const activeSubscriptionPlan = activeSubscription.subscriptions[0].subscriptionPlan;
+      if (activeSubscriptionPlan) {
+        planId = activeSubscriptionPlan.id; 
+      }
+    }
+
     const payload = {
       sub: user.id,
       email: user.email,
       role: user.role,
       avatar: user.avatar,
       name: user.name,
+      planId: planId,  
     };
 
     return {
       access_token: this.jwtService.sign(payload),
     };
   }
+
+
 
   async sendActivationEmail(
     email: string,

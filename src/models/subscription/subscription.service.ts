@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Subscription, SubscriptionStatus } from './entity/subscription.entity';
@@ -45,12 +45,15 @@ export class SubscriptionService {
         return orderCode;
     }
 
-    async createSubscription(userId: number, planId: number, confirmChange = false): Promise<{ message?: string; paymentUrl?: string }> {
+
+    async createSubscription(userId: number, planId: number, confirmChange = false): Promise < { statusCode: number; message: string; paymentUrl?: string } > {
         const logger = new Logger('SubscriptionService');
 
         // 1. Kiểm tra User
         const user = await this.userRepository.findOne({ where: { id: userId } });
-        if (!user) throw new NotFoundException(`User with ID ${userId} not found`);
+        if(!user) {
+            return { statusCode: HttpStatus.NOT_FOUND, message: `User with ID ${userId} not found` };
+        }
 
         // 2. Kiểm tra Subscription hiện tại của User
         const existingSubscription = await this.subscriptionRepository.findOne({
@@ -58,20 +61,19 @@ export class SubscriptionService {
             relations: ['subscriptionPlan'],
         });
 
-        if (existingSubscription) {
+        if(existingSubscription) {
             // Nếu User đã có Subscription
             if (existingSubscription.subscriptionPlan.id === planId) {
                 // Nếu Subscription hiện tại trùng với planId
                 if (existingSubscription.status === SubscriptionStatus.ACTIVE) {
-                    return { message: 'Bạn đã mua gói này rồi.' };
+                    return { statusCode: HttpStatus.CONFLICT, message: 'Bạn đã mua gói này rồi.' };
                 } else {
-                    return { paymentUrl: existingSubscription.paymentLinkId }; // Trả về link thanh toán cũ
+                    return { statusCode: HttpStatus.NO_CONTENT, message: 'Chưa thanh toán. Trả về link thanh toán.', paymentUrl: existingSubscription.paymentLinkId }; // Trả về link thanh toán cũ
                 }
             } else {
                 // Nếu Subscription hiện tại khác planId
                 if (existingSubscription.status === SubscriptionStatus.ACTIVE && !confirmChange) {
-                    // Nếu Subscription cũ đang ACTIVE và chưa xác nhận, yêu cầu xác nhận
-                    return { message: 'Bạn đã có gói hiện tại đang ACTIVE. Xác nhận để thay đổi gói.' };
+                    return { statusCode: HttpStatus.ACCEPTED, message: 'Bạn đã có gói hiện tại đang ACTIVE. Xác nhận để thay đổi gói.' };
                 }
 
                 // Xóa Subscription cũ nếu đã được xác nhận
@@ -81,7 +83,9 @@ export class SubscriptionService {
 
         // 3. Kiểm tra Plan
         const plan = await this.planRepository.findOne({ where: { id: planId } });
-        if (!plan) throw new NotFoundException(`Subscription Plan với ID ${planId} không tồn tại`);
+        if(!plan) {
+            return { statusCode: HttpStatus.NOT_FOUND, message: `Subscription Plan với ID ${planId} không tồn tại` };
+        }
 
         // 4. Tạo orderCode không trùng
         const orderCode = await this.generateUniqueOrderCode();
@@ -123,7 +127,7 @@ export class SubscriptionService {
         savedSubscription.paymentLinkId = paymentUrl;
         await this.subscriptionRepository.save(savedSubscription);
 
-        return { paymentUrl };
+        return { statusCode: HttpStatus.CREATED, message: 'Subscription created successfully. Redirect to payment', paymentUrl };
     }
 
 
