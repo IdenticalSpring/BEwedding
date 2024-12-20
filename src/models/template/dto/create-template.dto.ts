@@ -1,6 +1,7 @@
 // src/template/dto/create-template.dto.ts
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEnum, IsNotEmpty, IsOptional, IsString, IsUrl, Length } from 'class-validator';
+import { Transform } from 'class-transformer';
+import { IsEnum, IsInt, IsNotEmpty, IsOptional, IsString, IsUrl, Length } from 'class-validator';
 
 export class CreateTemplateDto {
   @ApiProperty({
@@ -39,7 +40,8 @@ export class CreateTemplateDto {
     description: 'Loại truy cập (FREE hoặc VIP)',
     example: 'FREE | VIP',
   })
-  @IsNotEmpty()
-  @IsEnum(['FREE', 'VIP'])
-  accessType: 'FREE' | 'VIP';
+  @IsOptional()
+  @Transform(({ value }) => parseInt(value, 10)) 
+  @IsInt()
+  subscriptionPlanId?: number;
 }

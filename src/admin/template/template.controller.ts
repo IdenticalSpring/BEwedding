@@ -54,23 +54,35 @@ export class AdminTemplateController {
         name: { type: 'string' },
         description: { type: 'string' },
         thumbnail: { type: 'string', format: 'binary' },
-        accessType: { type: 'string' },
+        subscriptionPlanId: { type: 'integer' },
         metaData: { type: 'string' },
       },
     },
   })
   @ApiResponse({ status: 201, description: 'Template created successfully' })
   @ApiResponse({ status: 400, description: 'Invalid input data' })
-  @UseInterceptors(FileInterceptor('thumbnail')) // Handles file uploads
+  @UseInterceptors(FileInterceptor('thumbnail'))
   async create(
     @Body() createTemplateDto: CreateTemplateDto,
     @UploadedFile() file: Express.Multer.File,
   ) {
+    // Xử lý file upload
     if (file) {
-      const uploadedImage = await this.cloudinaryService.uploadImage(file);
-      createTemplateDto.thumbnailUrl = uploadedImage.secure_url; // Save image URL
+      try {
+        const uploadedImage = await this.cloudinaryService.uploadImage(file);
+        createTemplateDto.thumbnailUrl = uploadedImage.secure_url;
+      } catch (error) {
+        throw new Error('Failed to upload thumbnail to Cloudinary.');
+      }
     }
-    return this.templateService.create(createTemplateDto);
+
+    // Lưu vào database
+    try {
+      const result = await this.templateService.create(createTemplateDto);
+      return result;
+    } catch (error) {
+      throw new Error('Failed to create template.');
+    }
   }
 
   @Get()
@@ -103,7 +115,7 @@ export class AdminTemplateController {
         name: { type: 'string' },
         description: { type: 'string' },
         thumbnail: { type: 'string', format: 'binary' },
-        accessType: { type: 'string' },
+        subscriptionPlanId: { type: 'integer' },
       },
     },
   })

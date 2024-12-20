@@ -1,7 +1,6 @@
 import { Section } from 'src/models/section/entity/section.entity';
 import { Theme } from 'src/models/theme/entity/theme.entity';
-import { User } from 'src/models/user/entity/user.entity';
-import { WeddingDetail } from 'src/models/wedding-details/entity/wedding-details.entity';
+import { SubscriptionPlan } from 'src/models/subscription_plan/entity/subscription-plan.entity';
 import {
   Entity,
   PrimaryGeneratedColumn,
@@ -10,6 +9,7 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   ManyToOne,
+  JoinColumn,
 } from 'typeorm';
 
 @Entity('templates')
@@ -29,12 +29,13 @@ export class Template {
   @Column({ type: 'text' })
   metaData: string;
 
-  @Column({
-    type: 'enum',
-    enum: ['FREE', 'VIP'],
-    default: 'FREE',
+  // Liên kết với bảng SubscriptionPlan
+  @ManyToOne(() => SubscriptionPlan, (subscriptionPlan) => subscriptionPlan.templates, {
+    nullable: true, // Cho phép NULL nếu không liên kết với SubscriptionPlan
+    onDelete: 'SET NULL', // Khi SubscriptionPlan bị xóa, đặt trường này là NULL
   })
-  accessType: 'FREE' | 'VIP';
+  @JoinColumn({ name: 'subscriptionPlanId' }) // Khóa ngoại subscriptionPlanId
+  subscriptionPlan: SubscriptionPlan;
 
   @CreateDateColumn()
   createdAt: Date;
