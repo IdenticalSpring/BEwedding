@@ -5,6 +5,7 @@ import { Repository } from 'typeorm';
 import { CreateTemplateDto } from './dto/create-template.dto';
 import { UpdateTemplateDto } from './dto/update-template.dto';
 import { Template } from './entity/template.entity';
+import { SubscriptionPlan } from '../subscription_plan/entity/subscription-plan.entity';
 
 @Injectable()
 export class TemplateService {
@@ -14,10 +15,26 @@ export class TemplateService {
   ) {}
 
   async create(createTemplateDto: CreateTemplateDto): Promise<Template> {
-    const template = this.templateRepository.create(createTemplateDto);
+    // Kiểm tra subscriptionPlanId
+    let subscriptionPlan = null;
+    if (createTemplateDto.subscriptionPlanId) {
+      subscriptionPlan = await this.templateRepository.manager.findOne(SubscriptionPlan, {
+        where: { id: createTemplateDto.subscriptionPlanId },
+      });
+
+      if (!subscriptionPlan) {
+        throw new NotFoundException(`Subscription Plan với ID "${createTemplateDto.subscriptionPlanId}" không tồn tại.`);
+      }
+    }
+
+    // Tạo template
+    const template = this.templateRepository.create({
+      ...createTemplateDto,
+      subscriptionPlan, 
+    });
+
     return this.templateRepository.save(template);
   }
-
   async findAll(
     page: number = 1,
     limit: number = 12,
@@ -25,6 +42,7 @@ export class TemplateService {
     const [data, total] = await this.templateRepository.findAndCount({
       take: limit,
       skip: (page - 1) * limit,
+      relations: ['subscriptionPlan'],
     });
 
     return {
@@ -38,7 +56,7 @@ export class TemplateService {
   async findOne(id: string): Promise<Template> {
     const template = await this.templateRepository.findOne({
       where: { id },
-      relations: ['sections'],
+      relations: ['sections' ,'subscriptionPlan'],
     });
     if (!template) {
       throw new NotFoundException(`Template with ID "${id}" not found`);

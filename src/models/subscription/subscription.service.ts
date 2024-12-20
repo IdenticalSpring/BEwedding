@@ -46,12 +46,12 @@ export class SubscriptionService {
     }
 
 
-    async createSubscription(userId: number, planId: number, confirmChange = false): Promise < { statusCode: number; message: string; paymentUrl?: string } > {
+    async createSubscription(userId: number, planId: number, confirmChange = false): Promise<{ statusCode: number; message: string; paymentUrl?: string }> {
         const logger = new Logger('SubscriptionService');
 
         // 1. Kiểm tra User
         const user = await this.userRepository.findOne({ where: { id: userId } });
-        if(!user) {
+        if (!user) {
             return { statusCode: HttpStatus.NOT_FOUND, message: `User with ID ${userId} not found` };
         }
 
@@ -61,14 +61,19 @@ export class SubscriptionService {
             relations: ['subscriptionPlan'],
         });
 
-        if(existingSubscription) {
+        if (existingSubscription) {
             // Nếu User đã có Subscription
             if (existingSubscription.subscriptionPlan.id === planId) {
                 // Nếu Subscription hiện tại trùng với planId
                 if (existingSubscription.status === SubscriptionStatus.ACTIVE) {
-                    return { statusCode: HttpStatus.CONFLICT, message: 'Bạn đã mua gói này rồi.' };
-                } else {
-                    return { statusCode: HttpStatus.NO_CONTENT, message: 'Chưa thanh toán. Trả về link thanh toán.', paymentUrl: existingSubscription.paymentLinkId }; // Trả về link thanh toán cũ
+                    return { statusCode: HttpStatus.CONFLICT, message: 'Bạn đã thanh toán cho gói này rồi.' };
+                } else if (existingSubscription.status === SubscriptionStatus.PENDING) {
+                    // Nếu đang ở trạng thái PENDING, trả lại paymentUrl
+                    return { statusCode: HttpStatus.NO_CONTENT, message: 'Chưa thanh toán. Trả về link thanh toán.', paymentUrl: existingSubscription.paymentLinkId };
+                } else if (existingSubscription.status === SubscriptionStatus.FAILED) {
+                    // Nếu trạng thái FAILED, xóa subscription cũ và tạo mới
+                    await this.deleteSubscription(existingSubscription.id); // Xóa subscription cũ
+                    return await this.createPaymentLinkAndUpdateSubscription(userId, planId); // Tạo mới
                 }
             } else {
                 // Nếu Subscription hiện tại khác planId
@@ -83,12 +88,12 @@ export class SubscriptionService {
 
         // 3. Kiểm tra Plan
         const plan = await this.planRepository.findOne({ where: { id: planId } });
-        if(!plan) {
+        if (!plan) {
             return { statusCode: HttpStatus.NOT_FOUND, message: `Subscription Plan với ID ${planId} không tồn tại` };
         }
 
         // 4. Tạo orderCode không trùng
-        const orderCode = await this.generateUniqueOrderCode();
+        let orderCode = await this.generateUniqueOrderCode();
 
         // 5. Tạo Subscription mới
         const subscription = this.subscriptionRepository.create({
@@ -117,19 +122,119 @@ export class SubscriptionService {
             ],
         };
 
-        logger.debug('Data sent to PayOS:');
-        console.log(paymentData);
+        logger.debug('Data sent to PayOS:', paymentData);
 
-        // 7. Gửi yêu cầu tạo Payment Link
-        const paymentUrl = await this.payOSService.createPaymentLink(paymentData);
+        // 7. Gửi yêu cầu tạo Payment Link (lặp lại nếu thất bại)
+        let paymentUrl: string | null = null;
+        let retries = 3; // Số lần thử lại tối đa
+
+        while (retries > 0) {
+            try {
+                paymentUrl = await this.payOSService.createPaymentLink(paymentData);
+
+                if (paymentUrl) {
+                    break; // Nếu tạo link thành công, thoát khỏi vòng lặp
+                }
+            } catch (error) {
+                retries--; // Giảm số lần thử lại nếu gặp lỗi
+                logger.error('Error creating payment link:', error.message);
+
+                if (retries === 0) {
+                    return { statusCode: HttpStatus.INTERNAL_SERVER_ERROR, message: 'Failed to create payment link after multiple attempts.' };
+                }
+
+                // Tạo lại orderCode nếu có lỗi "Đơn thanh toán đã tồn tại"
+                if (error.message.includes("Đơn thanh toán đã tồn tại")) {
+                    orderCode = await this.generateUniqueOrderCode(); // Tạo lại orderCode mới
+                    paymentData.orderCode = orderCode; // Cập nhật orderCode trong dữ liệu
+                }
+            }
+        }
 
         // 8. Cập nhật paymentLinkId
-        savedSubscription.paymentLinkId = paymentUrl;
-        await this.subscriptionRepository.save(savedSubscription);
+        if (paymentUrl) {
+            savedSubscription.paymentLinkId = paymentUrl;
+            savedSubscription.status = SubscriptionStatus.PENDING;  // Đảm bảo trạng thái là PENDING khi đang chờ thanh toán
+            await this.subscriptionRepository.save(savedSubscription);
 
-        return { statusCode: HttpStatus.CREATED, message: 'Subscription created successfully. Redirect to payment', paymentUrl };
+            return { statusCode: HttpStatus.CREATED, message: 'Subscription created successfully. Redirect to payment', paymentUrl };
+        } else {
+            return { statusCode: HttpStatus.INTERNAL_SERVER_ERROR, message: 'Payment link creation failed after retries' };
+        }
     }
 
+    // Helper function to handle Payment Link creation for failed subscriptions
+    async createPaymentLinkAndUpdateSubscription(userId: number, planId: number): Promise<{ statusCode: number; message: string; paymentUrl?: string }> {
+        const user = await this.userRepository.findOne({ where: { id: userId } });
+        const plan = await this.planRepository.findOne({ where: { id: planId } });
+
+        if (!user || !plan) {
+            return { statusCode: HttpStatus.NOT_FOUND, message: 'User or Plan not found' };
+        }
+
+        // Tạo orderCode mới vì trạng thái là FAILED
+        let orderCode = await this.generateUniqueOrderCode();
+
+        // 6. Chuẩn bị dữ liệu gửi tới PayOS
+        let paymentData = {
+            orderCode, // orderCode mới được tạo
+            amount: Number(plan.price),
+            description: `Subscription for plan: ${plan.name}`.slice(0, 25),
+            returnUrl: `${this.frontendUrl}/payment-success`,
+            cancelUrl: `${this.frontendUrl}/payment-cancel`,
+            items: [
+                {
+                    name: plan.name.slice(0, 25),
+                    quantity: 1,
+                    price: Number(plan.price),
+                },
+            ],
+        };
+
+        // Gửi yêu cầu tạo Payment Link (lặp lại nếu thất bại)
+        let paymentUrl: string | null = null;
+        let retries = 3; // Số lần thử lại tối đa
+
+        while (retries > 0) {
+            try {
+                paymentUrl = await this.payOSService.createPaymentLink(paymentData);
+
+                if (paymentUrl) {
+                    break; // Nếu tạo link thành công, thoát khỏi vòng lặp
+                }
+            } catch (error) {
+                retries--; // Giảm số lần thử lại nếu gặp lỗi
+
+                if (retries === 0) {
+                    return { statusCode: HttpStatus.INTERNAL_SERVER_ERROR, message: 'Failed to create payment link after multiple attempts.' };
+                }
+
+                // Tạo lại orderCode nếu có lỗi "Đơn thanh toán đã tồn tại"
+                if (error.message.includes("Đơn thanh toán đã tồn tại")) {
+                    orderCode = await this.generateUniqueOrderCode(); // Tạo lại orderCode mới
+                    paymentData.orderCode = orderCode; // Cập nhật orderCode trong dữ liệu
+                }
+            }
+        }
+
+        if (paymentUrl) {
+            // Tạo Subscription mới
+            const subscription = this.subscriptionRepository.create({
+                user,
+                subscriptionPlan: plan,
+                amount: plan.price,
+                status: SubscriptionStatus.PENDING,
+                orderCode,
+                paymentLinkId: paymentUrl,
+            });
+
+            const savedSubscription = await this.subscriptionRepository.save(subscription);
+
+            return { statusCode: HttpStatus.CREATED, message: 'Payment link recreated successfully. Redirect to payment', paymentUrl };
+        }
+
+        return { statusCode: HttpStatus.INTERNAL_SERVER_ERROR, message: 'Failed to recreate payment link.' };
+    }
 
 
 
