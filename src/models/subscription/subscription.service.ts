@@ -296,5 +296,17 @@ export class SubscriptionService {
 
         return { message: `Subscription with ID ${id} has been deleted successfully.` };
     }
+    async getSubscriptionById(id: number): Promise<Subscription> {
+        const subscription = await this.subscriptionRepository.findOne({
+            where: { id },
+            relations: ['user', 'subscriptionPlan'], // Include relations if needed
+        });
+
+        if (!subscription) {
+            throw new NotFoundException(`Subscription with ID ${id} not found`);
+        }
+
+        return subscription;
+    }
 
 }

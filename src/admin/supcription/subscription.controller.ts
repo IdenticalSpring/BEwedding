@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Param, Delete, Query, Req, BadRequestException, Patch, UseGuards, Get } from '@nestjs/common';
+import { Controller, Post, Body, Param, Delete, Query, Req, BadRequestException, Patch, UseGuards, Get, ParseIntPipe } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth, ApiQuery } from '@nestjs/swagger';
 import { SubscriptionService } from 'src/models/subscription/subscription.service'; 
 import { CreateSubscriptionDto } from 'src/models/subscription/dto/create-subscription.dto'; 
@@ -65,5 +65,12 @@ export class AdminSubscriptionController{
     @ApiResponse({ status: 404, description: 'Subscription not found' })
     async deleteSubscription(@Param('id') id: number): Promise<{ message: string }> {
         return this.subscriptionService.deleteSubscription(id);
+    }
+    @Get(':id')
+    @ApiOperation({ summary: 'Get a subscription by ID' })
+    @ApiResponse({ status: 200, description: 'Subscription found successfully' })
+    @ApiResponse({ status: 404, description: 'Subscription not found' })
+    async getSubscriptionById(@Param('id', ParseIntPipe) id: number) {
+        return this.subscriptionService.getSubscriptionById(id);
     }
 }
