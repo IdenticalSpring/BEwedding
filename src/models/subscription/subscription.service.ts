@@ -111,8 +111,8 @@ export class SubscriptionService {
             orderCode: orderCode, // Sử dụng orderCode đã tạo
             amount: Number(plan.price),
             description: `Subscription for plan: ${plan.name}`.slice(0, 25),
-            returnUrl: `${this.frontendUrl}/payment-success`,
-            cancelUrl: `${this.frontendUrl}/payment-cancel`,
+            returnUrl: `${this.frontendUrl}/payment-status`,
+            cancelUrl: `${this.frontendUrl}/payment-status`,
             items: [
                 {
                     name: plan.name.slice(0, 25),
@@ -180,8 +180,8 @@ export class SubscriptionService {
             orderCode, // orderCode mới được tạo
             amount: Number(plan.price),
             description: `Subscription for plan: ${plan.name}`.slice(0, 25),
-            returnUrl: `${this.frontendUrl}/payment-success`,
-            cancelUrl: `${this.frontendUrl}/payment-cancel`,
+            returnUrl: `${this.frontendUrl}/payment-status`,
+            cancelUrl: `${this.frontendUrl}/payment-status`,
             items: [
                 {
                     name: plan.name.slice(0, 25),
