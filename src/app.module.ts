@@ -79,7 +79,7 @@ import { AdminSubscriptionPlanModule } from './admin/supcription_plan/subscripti
         SubscriptionPlan,
         Subscription,
       ],
-      synchronize: true,
+      synchronize: false,
     }),
     MulterModule.register({
       dest: './uploads',
