@@ -62,12 +62,4 @@ export class CreateTemplateUserDto {
   @IsOptional()
   @IsString()
   metaData: string;
-
-  @ApiProperty({
-    description: 'Loại truy cập (FREE hoặc VIP)',
-    example: 'FREE | VIP',
-  })
-  @IsNotEmpty()
-  @IsEnum(['FREE', 'VIP'])
-  accessType: 'FREE' | 'VIP';
 }

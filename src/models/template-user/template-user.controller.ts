@@ -49,7 +49,7 @@ export class TemplateController {
         name: { type: 'string' },
         description: { type: 'string' },
         thumbnailUrl: { type: 'string' },
-        accessType: { type: 'string' },
+        // accessType: { type: 'string' },
         metaData: { type: 'string' },
         userId: { type: 'number' },
         brideName: { type: 'string' },

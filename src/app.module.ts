@@ -50,7 +50,6 @@ import { PayOSModule } from './models/subscription/payos.module';
 import { AdminSubscriptionModule } from './admin/supcription/subscription.module';
 import { AdminSubscriptionPlanModule } from './admin/supcription_plan/subscription-plan.module';
 
-
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -80,7 +79,7 @@ import { AdminSubscriptionPlanModule } from './admin/supcription_plan/subscripti
         SubscriptionPlan,
         Subscription,
       ],
-      synchronize: false,
+      synchronize: true,
     }),
     MulterModule.register({
       dest: './uploads',

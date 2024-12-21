@@ -33,13 +33,6 @@ export class templateUser {
   @Column({ type: 'text' })
   metaData: string;
 
-  @Column({
-    type: 'enum',
-    enum: ['FREE', 'VIP'],
-    default: 'FREE',
-  })
-  accessType: 'FREE' | 'VIP';
-
   @Column({ type: 'text' })
   brideName: string;
   @Column({ type: 'text' })
