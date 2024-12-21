@@ -12,7 +12,7 @@ export class SectionUser {
   @PrimaryGeneratedColumn('uuid')
   id: number;
 
-  @Column({ type: 'varchar', length: 255 })
+  @Column({ type: 'varchar', length: 255, nullable: true })
   name: string;
 
   @Column({ type: 'json', nullable: true })
