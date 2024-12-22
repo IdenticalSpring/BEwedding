@@ -109,7 +109,7 @@ export class AuthService {
       .andWhere('subscription.status = :status', { status: 'active' })
       .getOne();
 
-    let planId = null;
+    let planId = 1;
     if (activeSubscription && activeSubscription.subscriptions.length > 0) {
       const activeSubscriptionPlan = activeSubscription.subscriptions[0].subscriptionPlan;
       if (activeSubscriptionPlan) {

@@ -1,10 +1,11 @@
-import { Controller, Post, Body, Param, Delete, Query, Req, BadRequestException, Patch } from '@nestjs/common';
+import { Controller, Post, Body, Param, Delete, Query, Req, BadRequestException, Patch, Get, ParseIntPipe } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
 import { SubscriptionService } from './subscription.service';
 import { CreateSubscriptionDto } from './dto/create-subscription.dto'; 
 import { Request } from 'express';
 import { PayOSWebhookDto } from './dto/webhook.dto';
 import { UpdateSubscriptionDto } from './dto/update-subcription.dto';
+import { Subscription } from './entity/subscription.entity';
 
 @ApiTags('Subscriptions')
 @Controller('subscriptions')
@@ -38,4 +39,16 @@ export class SubscriptionController {
 
         await this.subscriptionService.updateSubscriptionStatus(orderCode, success, startDate, endDate);
     }
+
+    @Get('user/:userId/valid-subscription')
+    @ApiOperation({ summary: 'Check if user has a valid subscription' })
+    @ApiResponse({ status: 200, description: 'Returns true or false based on subscription validity' })
+    async checkUserSubscription(
+        @Param('userId', ParseIntPipe) userId: number,
+    ): Promise<{ hasValidSubscription: boolean }> {
+        const isValid = await this.subscriptionService.hasValidSubscription(userId);
+        return { hasValidSubscription: isValid };
+    }
+
+
 }

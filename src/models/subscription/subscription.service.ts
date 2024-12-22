@@ -308,5 +308,23 @@ export class SubscriptionService {
 
         return subscription;
     }
+    async hasValidSubscription(userId: number): Promise<boolean> {
+        const subscription = await this.subscriptionRepository.findOne({
+            where: { user: { id: userId } },
+            relations: ['subscriptionPlan'], // Bao gồm thông tin gói đăng ký
+        });
+
+        if (!subscription) {
+            return false; // Không có subscription nào
+        }
+
+        // Kiểm tra điều kiện: nếu subscriptionPlan.id !== 1 và status là ACCEPTED
+        if (subscription.subscriptionPlan.id !== 1 && subscription.status === SubscriptionStatus.ACTIVE) {
+            return true; // Có gói đăng ký hợp lệ
+        }
+
+        return false; // Không hợp lệ
+    }
+
 
 }
