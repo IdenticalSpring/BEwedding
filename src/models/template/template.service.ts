@@ -70,7 +70,25 @@ export class TemplateService {
     updateTemplateDto: UpdateTemplateDto,
   ): Promise<Template> {
     const template = await this.findOne(id);
+
+    // Xử lý cập nhật subscriptionPlan
+    if (updateTemplateDto.subscriptionPlanId !== undefined) {
+      const subscriptionPlan = await this.templateRepository.manager.findOne(SubscriptionPlan, {
+        where: { id: updateTemplateDto.subscriptionPlanId },
+      });
+
+      if (!subscriptionPlan) {
+        throw new NotFoundException(
+          `Subscription Plan với ID "${updateTemplateDto.subscriptionPlanId}" không tồn tại.`,
+        );
+      }
+
+      template.subscriptionPlan = subscriptionPlan;
+    }
+
+    // Cập nhật các trường còn lại
     Object.assign(template, updateTemplateDto);
+
     return this.templateRepository.save(template);
   }
 
