@@ -15,8 +15,8 @@ export class Section {
   @Column({ type: 'varchar', length: 255, nullable: true })
   name: string;
 
-  @Column({ type: 'json', nullable: true })
-  style: Record<string, any>;
+  // @Column({ type: 'json', nullable: true })
+  // style?: Record<string, any>;
 
   @Column({ type: 'varchar', length: 100, nullable: true })
   theme: string;
