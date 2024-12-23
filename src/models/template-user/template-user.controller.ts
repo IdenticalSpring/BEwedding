@@ -52,8 +52,8 @@ export class TemplateController {
         // accessType: { type: 'string' },
         metaData: { type: 'string' },
         userId: { type: 'number' },
-        brideName: { type: 'string' },
-        groomName: { type: 'string' },
+        linkName: { type: 'string' },
+  
       },
     },
   })
@@ -136,4 +136,12 @@ export class TemplateController {
     }
     return this.templateService.update(id, updateTemplateDto);
   }
+  @Get('/link/:linkName')
+  @ApiOperation({ summary: 'Get template by linkName' })
+  @ApiResponse({ status: 200, description: 'Template details' })
+  @ApiResponse({ status: 404, description: 'Template not found' })
+  async findByLinkName(@Param('linkName') linkName: string) {
+    return this.templateService.findByLinkName(linkName);
+  }
+
 }

@@ -1,5 +1,5 @@
 // src/template/template.service.ts
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { ConflictException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateTemplateUserDto } from './dto/create-template-user.dto';
@@ -13,13 +13,19 @@ export class TemplateUserService {
     private readonly templateRepository: Repository<templateUser>,
   ) {}
 
-  async create(
-    createTemplateDto: CreateTemplateUserDto,
-  ): Promise<templateUser> {
-    const template = this.templateRepository.create(createTemplateDto);
-    return this.templateRepository.save(template);
-  }
 
+  async create(createTemplateDto: CreateTemplateUserDto): Promise<templateUser> {
+    try {
+     
+      const template = this.templateRepository.create(createTemplateDto);
+      return await this.templateRepository.save(template);
+    } catch (error) {
+      if (error.code === 'ER_DUP_ENTRY') {
+        throw new ConflictException('Link đã được sử dụng bởi một template khác');
+      }
+      throw new InternalServerErrorException('An error occurred while creating the template');
+    }
+  }
   async findAll(
     page: number = 1,
     limit: number = 12,
@@ -93,4 +99,17 @@ export class TemplateUserService {
 
     await this.templateRepository.remove(template);
   }
+  async findByLinkName(linkName: string): Promise<templateUser> {
+    const template = await this.templateRepository.findOne({
+      where: { linkName },
+      relations: ['section_user'],
+    });
+
+    if (!template) {
+      throw new NotFoundException(`Template with linkName "${linkName}" not found`);
+    }
+
+    return template;
+  }
+
 }
