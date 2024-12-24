@@ -1,9 +1,10 @@
-import { Controller, Get, Post, Put, Delete, Body, Param } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Body, Param, HttpCode, HttpStatus } from '@nestjs/common';
 import { InvitationService } from './invitation.service'; 
 
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { CreateInvitationDto } from './dto/create_invitation.dto';
 import { UpdateInvitationDto } from './dto/update_invitation.dto';
+import { Invitation } from './entity/invitation.entity';
 
 @ApiTags('Invitations')
 @Controller('invitations')
@@ -35,9 +36,11 @@ export class InvitationController {
         return await this.invitationService.updateInvitation(id, updateDto);
     }
 
-    @Delete(':id')
-    @ApiOperation({ summary: 'Delete a public invitation by ID' })
-    async remove(@Param('id') id: string) {
-        return await this.invitationService.deleteInvitation(id);
+    @Delete('by-template/:templateUserId')
+    @HttpCode(HttpStatus.NO_CONTENT)
+    @ApiOperation({ summary: 'Delete an invitation by template_userId' })
+    async deleteByTemplateUserId(@Param('templateUserId') templateUserId: string): Promise<void> {
+        await this.invitationService.deleteInvitationByTemplateUserId(templateUserId);
     }
+
 }

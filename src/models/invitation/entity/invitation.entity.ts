@@ -1,14 +1,5 @@
-import { templateUser } from 'src/models/template-user/entity/template-user.entity';
-import { SectionUser } from 'src/models/section-user/entity/section-user.entity';
-import {
-    Entity,
-    PrimaryGeneratedColumn,
-    Column,
-    OneToOne,
-    JoinColumn,
-    CreateDateColumn,
-    UpdateDateColumn,
-} from 'typeorm';
+import { templateUser } from "src/models/template-user/entity/template-user.entity";
+import { Column, CreateDateColumn, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
 @Entity('invitation')
 export class Invitation {
@@ -22,7 +13,7 @@ export class Invitation {
     message: string;
 
     @Column({ type: 'varchar', nullable: true })
-    audience: string; 
+    audience: string;
 
     @CreateDateColumn()
     createdAt: Date;
@@ -30,7 +21,7 @@ export class Invitation {
     @UpdateDateColumn()
     updatedAt: Date;
 
-    @OneToOne(() => templateUser, { onDelete: 'CASCADE' })
+    @OneToOne(() => templateUser, (templateUser) => templateUser.invitation, { onDelete: 'CASCADE' })
     @JoinColumn({ name: 'template_userId' })
     templateUser: templateUser;
 
@@ -38,5 +29,5 @@ export class Invitation {
     template_userId: string;
 
     @Column({ type: 'json', nullable: true })
-    metadata: Record<string, any>; 
+    metadata: Record<string, any>;
 }

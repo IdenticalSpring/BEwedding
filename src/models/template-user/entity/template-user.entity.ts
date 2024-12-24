@@ -1,5 +1,6 @@
 import { GallerySection } from 'src/models/gallery-section/entity/gallery-section.entity';
 import { GuestList } from 'src/models/guest/entity/guest.entity';
+import { Invitation } from 'src/models/invitation/entity/invitation.entity';
 import { SectionUser } from 'src/models/section-user/entity/section-user.entity';
 import { Section } from 'src/models/section/entity/section.entity';
 import { Theme } from 'src/models/theme/entity/theme.entity';
@@ -14,6 +15,7 @@ import {
   UpdateDateColumn,
   ManyToOne,
   JoinColumn,
+  OneToOne,
 } from 'typeorm';
 
 @Entity('template_user')
@@ -59,4 +61,7 @@ export class templateUser {
     cascade: true,
   })
   section_user: SectionUser[];
+
+  @OneToOne(() => Invitation, (invitation) => invitation.templateUser, { cascade: true })
+  invitation: Invitation;
 }

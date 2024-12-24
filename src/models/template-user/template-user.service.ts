@@ -51,7 +51,7 @@ export class TemplateUserService {
   async findOne(id: string): Promise<templateUser> {
     const template = await this.templateRepository.findOne({
       where: { id },
-      relations: ['section_user'],
+      relations: ['section_user', 'invitation'],
     });
     if (!template) {
       throw new NotFoundException(`Template with ID "${id}" not found`);
@@ -102,7 +102,7 @@ export class TemplateUserService {
   async findByLinkName(linkName: string): Promise<templateUser> {
     const template = await this.templateRepository.findOne({
       where: { linkName },
-      relations: ['section_user'],
+      relations: ['section_user','invitation'],
     });
 
     if (!template) {
