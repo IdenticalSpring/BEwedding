@@ -49,6 +49,8 @@ import { SubscriptionModule } from './models/subscription/subscription.module';
 import { PayOSModule } from './models/subscription/payos.module';
 import { AdminSubscriptionModule } from './admin/supcription/subscription.module';
 import { AdminSubscriptionPlanModule } from './admin/supcription_plan/subscription-plan.module';
+import { InvitationModule } from './models/invitation/invitation.module';
+import { Invitation } from './models/invitation/entity/invitation.entity';
 
 @Module({
   imports: [
@@ -78,6 +80,7 @@ import { AdminSubscriptionPlanModule } from './admin/supcription_plan/subscripti
         templateUser,
         SubscriptionPlan,
         Subscription,
+        Invitation,
       ],
       synchronize: false,
     }),
@@ -105,6 +108,7 @@ import { AdminSubscriptionPlanModule } from './admin/supcription_plan/subscripti
     SubscriptionPlanModule,
     SubscriptionModule,
     PayOSModule,
+    InvitationModule,
     // Cloudinary
     CloudinaryModule,
 
