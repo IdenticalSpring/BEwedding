@@ -33,10 +33,8 @@ export class templateUser {
   @Column({ type: 'text' })
   metaData: string;
 
-  @Column({ type: 'text' })
-  brideName: string;
-  @Column({ type: 'text' })
-  groomName: string;
+  @Column({ type: 'varchar', length: 255, unique: true })
+  linkName: string;
 
   @Column()
   userId: number;

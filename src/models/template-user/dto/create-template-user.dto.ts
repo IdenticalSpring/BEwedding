@@ -1,5 +1,6 @@
 // src/template/dto/create-template.dto.ts
 import { ApiProperty } from '@nestjs/swagger';
+import { Transform } from 'class-transformer';
 import {
   IsEnum,
   IsNotEmpty,
@@ -7,6 +8,7 @@ import {
   IsString,
   IsUrl,
   Length,
+  Matches,
 } from 'class-validator';
 
 export class CreateTemplateUserDto {
@@ -35,18 +37,17 @@ export class CreateTemplateUserDto {
   description: string;
 
   @ApiProperty({
-    description: 'Tên cô dâu',
+    description: 'Tên link',
   })
   @IsNotEmpty()
   @IsString()
-  brideName: string;
+  @Transform(({ value }) => value.trim()) 
+  @Matches(/^[a-zA-Z0-9_-]+$/, {
+    message: 'linkName chỉ được chứa chữ, số, không dấu, gạch ngang (-) và gạch dưới (_)',
+  })
+  linkName: string;
 
-  @ApiProperty({
-    description: 'Tên chú rể',
-  })
-  @IsNotEmpty()
-  @IsString()
-  groomName: string;
+
 
   @ApiProperty({
     description: 'Id người dùng',
