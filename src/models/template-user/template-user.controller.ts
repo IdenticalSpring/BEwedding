@@ -28,6 +28,7 @@ import { templateUser } from './entity/template-user.entity';
 import { CloudinaryService } from '../cloudinary/cloudinary.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { UpdateTemplateUserDto } from './dto/update-template-user.dto';
+import { Public } from 'src/auth/decorators/public.decorator';
 
 @ApiTags('Template_user')
 @Controller('templates_user')
@@ -136,6 +137,7 @@ export class TemplateController {
     }
     return this.templateService.update(id, updateTemplateDto);
   }
+  @Public()
   @Get('/link/:linkName')
   @ApiOperation({ summary: 'Get template by linkName' })
   @ApiResponse({ status: 200, description: 'Template details' })
