@@ -59,7 +59,7 @@ export class SectionUserController {
     description: 'Details of the section.',
     type: SectionUser,
   })
-  async findOne(@Param('id') id: number): Promise<SectionUser> {
+  async findOne(@Param('id') id: string): Promise<SectionUser> {
     return this.sectionService.findOne(id);
   }
 
@@ -72,7 +72,7 @@ export class SectionUserController {
     type: SectionUser,
   })
   async update(
-    @Param('id') id: number,
+    @Param('id') id: string,
     @Body() updateSectionDto: UpdateSectionUserDto,
   ): Promise<SectionUser> {
     return this.sectionService.update(id, updateSectionDto);
@@ -85,7 +85,7 @@ export class SectionUserController {
     status: 200,
     description: 'The section was deleted successfully.',
   })
-  async remove(@Param('id') id: number): Promise<void> {
+  async remove(@Param('id') id: string): Promise<void> {
     return this.sectionService.remove(id);
   }
 }

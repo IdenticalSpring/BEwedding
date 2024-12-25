@@ -13,6 +13,8 @@ import {
   Query,
   UseGuards,
   BadRequestException,
+  ConflictException,
+  InternalServerErrorException,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -65,12 +67,40 @@ export class TemplateController {
     @Body() createTemplateDto: CreateTemplateUserDto,
     @UploadedFile() file: Express.Multer.File,
   ) {
-    if (file) {
-      const uploadedImage = await this.cloudinaryService.uploadImage(file);
-      createTemplateDto.thumbnailUrl = uploadedImage.secure_url; // Save image URL
+    try {
+      // Log dữ liệu đầu vào
+      console.log("CreateTemplateUserDto:", createTemplateDto);
+
+      if (file) {
+        console.log("File detected, starting upload...");
+        const uploadedImage = await this.cloudinaryService.uploadImage(file);
+        console.log("Uploaded Image URL:", uploadedImage.secure_url);
+        createTemplateDto.thumbnailUrl = uploadedImage.secure_url; // Save image URL
+      }
+
+      // Thực hiện tạo template
+      const createdTemplate = await this.templateService.create(createTemplateDto);
+      console.log("Template created successfully:", createdTemplate);
+
+      return createdTemplate;
+    } catch (error) {
+      // Log chi tiết lỗi
+      console.error("Error occurred in create method:", {
+        message: error.message,
+        stack: error.stack,
+        name: error.name,
+        code: error.code,
+      });
+
+      // Phân loại lỗi và throw lại lỗi tương ứng
+      if (error.code === 'ER_DUP_ENTRY') {
+        throw new ConflictException('Link đã được sử dụng bởi một template khác');
+      }
+
+      throw new InternalServerErrorException('An error occurred while creating the template');
     }
-    return this.templateService.create(createTemplateDto);
   }
+
 
   @Get(':id')
   @ApiOperation({ summary: 'Get details of a template' })
@@ -114,8 +144,7 @@ export class TemplateController {
       properties: {
         name: { type: 'string' },
         description: { type: 'string' },
-        thumbnail: { type: 'string', format: 'binary' },
-        accessType: { type: 'string' },
+        linkName: { type: 'string' },
       },
     },
   })
@@ -145,5 +174,18 @@ export class TemplateController {
   async findByLinkName(@Param('linkName') linkName: string) {
     return this.templateService.findByLinkName(linkName);
   }
-
+  @Delete(':id')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @ApiOperation({ summary: 'Delete a template by ID' })
+  @ApiResponse({
+    status: 204,
+    description: 'Template deleted successfully',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Template not found',
+  })
+  async remove(@Param('id') id: string): Promise<void> {
+    return this.templateService.remove(id);
+  }
 }

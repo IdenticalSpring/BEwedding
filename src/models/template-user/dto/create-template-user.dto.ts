@@ -47,8 +47,6 @@ export class CreateTemplateUserDto {
   })
   linkName: string;
 
-
-
   @ApiProperty({
     description: 'Id người dùng',
   })
