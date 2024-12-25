@@ -1,22 +1,22 @@
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Invitation } from './entity/invitation.entity'; 
+import { Invitation_User } from './entity/invitation.entity'; 
 
 @Injectable()
-export class InvitationService {
-    private readonly logger = new Logger(InvitationService.name);
+export class InvitationUserService {
+    private readonly logger = new Logger(InvitationUserService.name);
     constructor(
-        @InjectRepository(Invitation)
-        private readonly invitationRepository: Repository<Invitation>,
+        @InjectRepository(Invitation_User)
+        private readonly invitationRepository: Repository<Invitation_User>,
     ) { }
 
-    async createInvitation(data: Partial<Invitation>): Promise<Invitation> {
+    async createInvitation(data: Partial<Invitation_User>): Promise<Invitation_User> {
         const invitation = this.invitationRepository.create(data);
         return await this.invitationRepository.save(invitation);
     }
 
-    async updateInvitation(id: string, data: Partial<Invitation>): Promise<Invitation> {
+    async updateInvitation(id: string, data: Partial<Invitation_User>): Promise<Invitation_User> {
         const invitation = await this.invitationRepository.findOne({ where: { id } });
         if (!invitation) {
             throw new Error('Invitation not found');
@@ -26,18 +26,18 @@ export class InvitationService {
     }
 
     async deleteInvitationByTemplateUserId(templateUserId: string): Promise<void> {
-        const result = await this.invitationRepository.delete({ templateId: templateUserId });
+        const result = await this.invitationRepository.delete({ template_userId: templateUserId });
         if (result.affected === 0) {
             throw new Error('Invitation not found or already deleted for the given template_userId');
         }
     }
 
 
-    async getAllInvitations(): Promise<Invitation[]> {
+    async getAllInvitations(): Promise<Invitation_User[]> {
         return await this.invitationRepository.find();
     }
 
-    async getInvitationById(id: string): Promise<Invitation> {
+    async getInvitationById(id: string): Promise<Invitation_User> {
         this.logger.log(`Fetching invitation with ID: ${id}`);
         const invitation = await this.invitationRepository.findOne({ where: { id } });
 

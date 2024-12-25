@@ -1,15 +1,21 @@
-import { Controller, Get, Post, Put, Delete, Body, Param, HttpCode, HttpStatus } from '@nestjs/common';
-import { InvitationService } from './invitation.service'; 
+import { Controller, Get, Post, Put, Delete, Body, Param, HttpCode, HttpStatus, UseGuards } from '@nestjs/common';
+import { InvitationService } from 'src/models/invitation/invitation.service'; 
 
-import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
-import { CreateInvitationDto } from './dto/create_invitation.dto';
-import { UpdateInvitationDto } from './dto/update_invitation.dto';
-import { Invitation } from './entity/invitation.entity';
 
-@ApiTags('Invitations')
-@Controller('invitations')
+import { CreateInvitationDto } from 'src/models/invitation/dto/create_invitation.dto'; 
+import { UpdateInvitationDto } from 'src/models/invitation/dto/update_invitation.dto'; 
+
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { RolesGuard } from 'src/auth/guards/role-auth.guard';
+import { Roles } from 'src/auth/decorators/roles.decorator';
+
+@ApiTags('admin/Invitations')
+@Controller('admin/invitations')
 @ApiBearerAuth('JWT')
-export class InvitationController {
+@UseGuards(JwtAuthGuard, RolesGuard)
+@Roles('admin')
+export class InvitationAdminController {
     constructor(private readonly invitationService: InvitationService) { }
 
     @Post()

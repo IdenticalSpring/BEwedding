@@ -1,6 +1,6 @@
 import { GallerySection } from 'src/models/gallery-section/entity/gallery-section.entity';
 import { GuestList } from 'src/models/guest/entity/guest.entity';
-import { Invitation } from 'src/models/invitation/entity/invitation.entity';
+import {  Invitation_User } from 'src/models/invitation_user/entity/invitation.entity';
 import { SectionUser } from 'src/models/section-user/entity/section-user.entity';
 import { Section } from 'src/models/section/entity/section.entity';
 import { Theme } from 'src/models/theme/entity/theme.entity';
@@ -62,6 +62,6 @@ export class templateUser {
   })
   section_user: SectionUser[];
 
-  @OneToOne(() => Invitation, (invitation) => invitation.templateUser, { cascade: true })
-  invitation: Invitation;
+  @OneToOne(() => Invitation_User, (invitation) => invitation.templateUser, { cascade: true })
+  invitation: Invitation_User;
 }

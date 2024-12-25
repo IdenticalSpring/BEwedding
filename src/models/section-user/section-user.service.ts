@@ -21,7 +21,7 @@ export class SectionService {
     return this.sectionRepository.find();
   }
 
-  async findOne(id: number): Promise<SectionUser> {
+  async findOne(id: string): Promise<SectionUser> {
     const section = await this.sectionRepository.findOne({ where: { id } });
     if (!section) {
       throw new NotFoundException(`Section with ID ${id} not found`);
@@ -29,8 +29,9 @@ export class SectionService {
     return section;
   }
 
+
   async update(
-    id: number,
+    id: string,
     updateSectionDto: UpdateSectionUserDto,
   ): Promise<SectionUser> {
     const section = await this.findOne(id);
@@ -38,7 +39,7 @@ export class SectionService {
     return this.sectionRepository.save(section);
   }
 
-  async remove(id: number): Promise<void> {
+  async remove(id: string): Promise<void> {
     const section = await this.findOne(id);
     await this.sectionRepository.remove(section);
   }
