@@ -12,10 +12,10 @@ export class CreateSectionUserDto {
   @IsOptional()
   name: string;
 
-  @ApiProperty({ description: 'Chi tiết của section', required: false })
+  @ApiProperty({ description: 'Responsive của section', required: false })
   @IsOptional()
   @IsString()
-  style?: Record<string, any>;
+  responsive?: string;
 
   @ApiProperty({
     description: 'Theme của section',
