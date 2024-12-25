@@ -37,6 +37,11 @@ export class CreateSectionDto {
   @IsString()
   position?: string;
 
+  @ApiProperty({ description: 'Responsive của section', required: false })
+  @IsOptional()
+  @IsString()
+  responsive?: string;
+
   @ApiProperty({
     description: 'Metadata (JSON)',
     required: false,
