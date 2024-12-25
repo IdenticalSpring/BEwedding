@@ -49,6 +49,9 @@ import { SubscriptionModule } from './models/subscription/subscription.module';
 import { PayOSModule } from './models/subscription/payos.module';
 import { AdminSubscriptionModule } from './admin/supcription/subscription.module';
 import { AdminSubscriptionPlanModule } from './admin/supcription_plan/subscription-plan.module';
+import {  Invitation_User } from './models/invitation_user/entity/invitation.entity';
+import { InvitationUserModule } from './models/invitation_user/invitation.module';
+import { InvitationAdminModule } from './admin/invitation/invitation.module';
 import { InvitationModule } from './models/invitation/invitation.module';
 import { Invitation } from './models/invitation/entity/invitation.entity';
 
@@ -80,7 +83,9 @@ import { Invitation } from './models/invitation/entity/invitation.entity';
         templateUser,
         SubscriptionPlan,
         Subscription,
+        Invitation_User, 
         Invitation,
+       
       ],
       synchronize: false,
     }),
@@ -108,6 +113,7 @@ import { Invitation } from './models/invitation/entity/invitation.entity';
     SubscriptionPlanModule,
     SubscriptionModule,
     PayOSModule,
+    InvitationUserModule,
     InvitationModule,
     // Cloudinary
     CloudinaryModule,
@@ -125,6 +131,7 @@ import { Invitation } from './models/invitation/entity/invitation.entity';
     AdminThemeModule,
     AdminSubscriptionModule,
     AdminSubscriptionPlanModule,
+    InvitationAdminModule,
   ],
   providers: [
     {

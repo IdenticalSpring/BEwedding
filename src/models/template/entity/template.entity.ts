@@ -10,7 +10,9 @@ import {
   UpdateDateColumn,
   ManyToOne,
   JoinColumn,
+  OneToOne,
 } from 'typeorm';
+import { Invitation } from 'src/models/invitation/entity/invitation.entity';
 
 @Entity('templates')
 export class Template {
@@ -48,4 +50,6 @@ export class Template {
 
   @OneToMany(() => Section, (section) => section.template, { cascade: true })
   sections: Section[];
+  @OneToOne(() => Invitation, (invitation) => invitation.template)
+  invitation: Invitation;
 }
