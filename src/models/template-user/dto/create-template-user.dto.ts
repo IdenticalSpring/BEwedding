@@ -7,6 +7,7 @@ import {
   IsOptional,
   IsString,
   IsUrl,
+  IsUUID,
   Length,
   Matches,
 } from 'class-validator';
@@ -61,4 +62,8 @@ export class CreateTemplateUserDto {
   @IsOptional()
   @IsString()
   metaData: string;
+  @ApiProperty({ description: 'ID của template gốc', example: 'template-uuid' })
+  @IsNotEmpty()
+  @IsUUID()
+  templateId: string;
 }

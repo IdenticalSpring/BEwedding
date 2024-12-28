@@ -43,7 +43,7 @@ export class TemplateController {
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
-  @ApiOperation({ summary: 'Create a new template' })
+  @ApiOperation({ summary: 'Create a new template_user and its associated invitation_user' })
   @ApiConsumes('multipart/form-data')
   @ApiBody({
     schema: {
@@ -52,54 +52,55 @@ export class TemplateController {
         name: { type: 'string' },
         description: { type: 'string' },
         thumbnailUrl: { type: 'string' },
-        // accessType: { type: 'string' },
         metaData: { type: 'string' },
         userId: { type: 'number' },
         linkName: { type: 'string' },
-  
+        templateId: { type: 'string' }, // Add templateId here
       },
     },
   })
-  @ApiResponse({ status: 201, description: 'Template created successfully' })
+  @ApiResponse({ status: 201, description: 'Template_user and Invitation_user created successfully' })
   @ApiResponse({ status: 400, description: 'Invalid input data' })
-  @UseInterceptors(FileInterceptor('thumbnail')) // Handles file uploads
+  @UseInterceptors(FileInterceptor('thumbnail'))
   async create(
     @Body() createTemplateDto: CreateTemplateUserDto,
     @UploadedFile() file: Express.Multer.File,
   ) {
     try {
-      // Log dữ liệu đầu vào
-      console.log("CreateTemplateUserDto:", createTemplateDto);
+      // Log input data
+      console.log('CreateTemplateUserDto:', createTemplateDto);
 
       if (file) {
-        console.log("File detected, starting upload...");
+        console.log('File detected, starting upload...');
         const uploadedImage = await this.cloudinaryService.uploadImage(file);
-        console.log("Uploaded Image URL:", uploadedImage.secure_url);
+        console.log('Uploaded Image URL:', uploadedImage.secure_url);
         createTemplateDto.thumbnailUrl = uploadedImage.secure_url; // Save image URL
       }
 
-      // Thực hiện tạo template
-      const createdTemplate = await this.templateService.create(createTemplateDto);
-      console.log("Template created successfully:", createdTemplate);
+      // Call service to handle creation
+      const createdTemplateUser = await this.templateService.create(createTemplateDto);
 
-      return createdTemplate;
+      console.log('Template_user and Invitation_user created successfully:', createdTemplateUser);
+
+      return createdTemplateUser;
     } catch (error) {
-      // Log chi tiết lỗi
-      console.error("Error occurred in create method:", {
+      // Log detailed error
+      console.error('Error occurred in create method:', {
         message: error.message,
         stack: error.stack,
         name: error.name,
         code: error.code,
       });
 
-      // Phân loại lỗi và throw lại lỗi tương ứng
+      // Handle specific error cases
       if (error.code === 'ER_DUP_ENTRY') {
         throw new ConflictException('Link đã được sử dụng bởi một template khác');
       }
 
-      throw new InternalServerErrorException('An error occurred while creating the template');
+      throw new InternalServerErrorException('An error occurred while creating the template_user');
     }
   }
+
 
 
   @Get(':id')
