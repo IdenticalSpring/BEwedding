@@ -73,7 +73,7 @@ export class GuestListController {
 
     return this.guestListService.findAll(weddingId, pageNumber, limitNumber);
   }
-
+  @Public()
   @Get(':id')
   @ApiOperation({ summary: 'Get a guest list entry by ID' })
   @ApiResponse({ status: 200, description: 'Return the guest list entry' })
