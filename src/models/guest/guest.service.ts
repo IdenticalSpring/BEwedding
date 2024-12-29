@@ -23,7 +23,7 @@ export class GuestListService {
       where: { weddingId },
       skip: (page - 1) * limit, // Tính toán offset
       take: limit, // Lấy số lượng khách mời theo limit
-      relations: ['weddingDetail'], // Fetch related weddingDetail
+      relations: ['weddingDetail', 'weddingDetail.templateUser'], // Fetch related weddingDetail
     });
 
     return {
@@ -36,8 +36,12 @@ export class GuestListService {
   }
 
   async findOne(id: string) {
-    return this.guestListRepository.findOneBy({ id });
+    return this.guestListRepository.findOne({
+      where: { id }, // Tìm theo ID
+      relations: ['weddingDetail', 'weddingDetail.templateUser'], 
+    });
   }
+
 
   async update(id: string, updateGuestListDto: UpdateGuestListDto) {
     await this.guestListRepository.update(id, updateGuestListDto);
