@@ -87,7 +87,7 @@ import { Invitation } from './models/invitation/entity/invitation.entity';
         Invitation,
        
       ],
-      synchronize: false,
+      synchronize: true,
     }),
     MulterModule.register({
       dest: './uploads',
