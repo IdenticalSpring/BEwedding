@@ -12,6 +12,9 @@ import {
   HttpStatus,
   Query,
   UseGuards,
+  BadRequestException,
+  InternalServerErrorException,
+  NotFoundException,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -66,22 +69,20 @@ export class AdminTemplateController {
     @Body() createTemplateDto: CreateTemplateDto,
     @UploadedFile() file: Express.Multer.File,
   ) {
-    // Xử lý file upload
-    if (file) {
-      try {
-        const uploadedImage = await this.cloudinaryService.uploadImage(file);
-        createTemplateDto.thumbnailUrl = uploadedImage.secure_url;
-      } catch (error) {
-        throw new Error('Failed to upload thumbnail to Cloudinary.');
-      }
+    if (!file) {
+      throw new BadRequestException('Thumbnail is required.');
     }
 
-    // Lưu vào database
     try {
+      // Upload file lên Cloudinary
+      const uploadedImage = await this.cloudinaryService.uploadImage(file);
+      createTemplateDto.thumbnailUrl = uploadedImage.secure_url;
+
+      // Lưu vào database
       const result = await this.templateService.create(createTemplateDto);
       return result;
     } catch (error) {
-      throw new Error('Failed to create template.');
+      throw new InternalServerErrorException('Failed to create template.');
     }
   }
 
@@ -131,12 +132,29 @@ export class AdminTemplateController {
     @Body() updateTemplateDto: UpdateTemplateDto,
     @UploadedFile() file: Express.Multer.File,
   ) {
-    if (file) {
-      const uploadedImage = await this.cloudinaryService.uploadImage(file);
-      updateTemplateDto.thumbnailUrl = uploadedImage.secure_url; // Save image URL
+    try {
+      // Nếu file được truyền qua, upload và cập nhật URL
+      if (file) {
+        const uploadedImage = await this.cloudinaryService.uploadImage(file);
+        updateTemplateDto.thumbnailUrl = uploadedImage.secure_url; // Save new image URL
+      } else {
+        // Giữ nguyên thumbnailUrl nếu không có file mới
+        const existingTemplate = await this.templateService.findOne(id);
+        if (!existingTemplate) {
+          throw new NotFoundException('Template not found');
+        }
+        updateTemplateDto.thumbnailUrl = existingTemplate.thumbnailUrl;
+      }
+
+      // Cập nhật dữ liệu trong database
+      return await this.templateService.update(id, updateTemplateDto);
+    } catch (error) {
+      throw new InternalServerErrorException(
+        'Failed to update the template.',
+      );
     }
-    return this.templateService.update(id, updateTemplateDto);
   }
+
 
   @Delete(':id')
   @Roles('admin')
