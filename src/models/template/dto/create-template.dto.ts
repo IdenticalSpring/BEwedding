@@ -38,7 +38,7 @@ export class CreateTemplateDto {
 
   @ApiProperty({
     description: 'Loại truy cập (FREE hoặc VIP)',
-    example: 'FREE | VIP',
+    example: 'Free | Vip',
   })
   @IsOptional()
   @Transform(({ value }) => parseInt(value, 10)) 

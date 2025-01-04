@@ -15,6 +15,7 @@ import {
   BadRequestException,
   InternalServerErrorException,
   NotFoundException,
+  Logger,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -40,6 +41,7 @@ import { RolesGuard } from 'src/auth/guards/role-auth.guard';
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Roles('admin')
 export class AdminTemplateController {
+  private readonly logger = new Logger(AdminTemplateController.name);
   constructor(
     private readonly templateService: TemplateService,
     private readonly cloudinaryService: CloudinaryService,
@@ -69,19 +71,23 @@ export class AdminTemplateController {
     @Body() createTemplateDto: CreateTemplateDto,
     @UploadedFile() file: Express.Multer.File,
   ) {
-    if (!file) {
+    if (!file && !createTemplateDto.thumbnailUrl) {
       throw new BadRequestException('Thumbnail is required.');
     }
 
     try {
-      // Upload file lên Cloudinary
-      const uploadedImage = await this.cloudinaryService.uploadImage(file);
-      createTemplateDto.thumbnailUrl = uploadedImage.secure_url;
+      // If a file is provided, upload it to Cloudinary
+      if (file) {
+        const uploadedImage = await this.cloudinaryService.uploadImage(file);
+        createTemplateDto.thumbnailUrl = uploadedImage.secure_url;
+      }
 
-      // Lưu vào database
+      // Save the template to the database
       const result = await this.templateService.create(createTemplateDto);
       return result;
     } catch (error) {
+      // Log the error before throwing the exception
+      this.logger.error('Error creating template:', error.stack);
       throw new InternalServerErrorException('Failed to create template.');
     }
   }
